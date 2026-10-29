@@ -31,3 +31,10 @@ Registro cronológico, solo se agregan entradas al final.
 - PR #3 (crear reserva) abierto.
 - El ejemplo de la consigna se usó como fixture de prueba.
 - TDD: `test:` con 7 fallas → `feat:` → 40 passed.
+
+## 2026-10-29 — feature/disponibilidad
+
+- PR #4 (superposición) abierto.
+- Giovanni mergeó el PR #1 a `main` (`73de8e3`). El agente reapuntó el PR #2 a `main`;
+  la rama `feature/harness-agentes` no se borró (requiere aprobación).
+- TDD: `test:` con 16 fallas → `feat:` → 58 passed.

@@ -5,11 +5,11 @@ curso · ⏳ pendiente. "PR abierto" significa que espera revisión y merge huma
 
 | # | Feature | Rama | Estado | Pruebas |
 | :-: | :--- | :--- | :--- | :--- |
-| 1 | Harness del agente y documentación | `feature/harness-agentes` | 🔄 PR #1 abierto | n/a (sin código) |
+| 1 | Harness del agente y documentación | `feature/harness-agentes` | ✅ PR #1 mergeado | n/a (sin código) |
 | 2 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | 🔄 PR #2 abierto | 5/5 ✅ |
 | 3 | Crear reserva con validaciones | `feature/crear-reserva` | 🔄 PR #3 abierto | 27/27 ✅ |
-| 4 | Reglas de superposición | `feature/reglas-superposicion` | 🔄 PR abierto | 40/40 ✅ |
-| 5 | Consulta de disponibilidad | `feature/disponibilidad` | ⏳ | — |
+| 4 | Reglas de superposición | `feature/reglas-superposicion` | 🔄 PR #4 abierto | 40/40 ✅ |
+| 5 | Consulta de disponibilidad | `feature/disponibilidad` | 🔄 PR abierto | 58/58 ✅ |
 | 6 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ⏳ | — |
 | 7 | README final | `feature/readme` | ⏳ | — |
 

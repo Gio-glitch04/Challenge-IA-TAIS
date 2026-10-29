@@ -42,5 +42,6 @@ ok docs/evidence
 
 ## Decisión humana
 
-**Pendiente:** Giovanni revisa y mergea el PR de esta feature. El agente no integra a
-`main` (ver `AGENTS.md`, sección 4).
+**Aceptado.** Giovanni revisó y mergeó el PR #1 a `main` el 2026-10-29 (merge commit
+`73de8e3`, "Merge pull request #1 from Gio-glitch04/feature/harness-agentes"). El agente
+no integra a `main` por su cuenta (ver `AGENTS.md`, sección 4).
