@@ -110,3 +110,37 @@ def crear_reserva(con: sqlite3.Connection, datos: ReservaEntrada) -> dict:
         con.execute("ROLLBACK")
         raise
     return reserva
+
+
+def cancelar_reserva(con: sqlite3.Connection, reserva_id: str) -> dict:
+    """Marca la reserva como cancelada. Nunca borra la fila: el historial se conserva."""
+    con.execute("BEGIN IMMEDIATE")
+    try:
+        reserva = obtener_reserva(con, reserva_id)
+        if reserva["estado"] == "cancelada":
+            raise Conflicto(f"La reserva '{reserva_id}' ya estaba cancelada")
+        con.execute(
+            "UPDATE reservas SET estado = 'cancelada', cancelada_en = ? WHERE id = ?",
+            (a_texto(ahora()), reserva_id),
+        )
+        reserva = obtener_reserva(con, reserva_id)
+        con.execute("COMMIT")
+    except BaseException:
+        con.execute("ROLLBACK")
+        raise
+    return reserva
+
+
+def listar_reservas(con: sqlite3.Connection, unidad_id=None, estado=None) -> list:
+    condiciones, valores = [], []
+    if unidad_id:
+        condiciones.append("unidad_id = ?")
+        valores.append(unidad_id)
+    if estado:
+        condiciones.append("estado = ?")
+        valores.append(estado)
+    donde = f" WHERE {' AND '.join(condiciones)}" if condiciones else ""
+    filas = con.execute(
+        f"SELECT * FROM reservas{donde} ORDER BY inicio, unidad_id", valores
+    ).fetchall()
+    return [dict(f) for f in filas]
