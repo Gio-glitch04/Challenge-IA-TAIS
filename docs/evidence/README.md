@@ -10,3 +10,4 @@ verificación ejecutada (comando, versión y salida reales), decisión humana y 
 | 03 | Crear reserva | [episodio-03-crear-reserva.md](episodio-03-crear-reserva.md) |
 | 04 | Reglas de superposición | [episodio-04-reglas-superposicion.md](episodio-04-reglas-superposicion.md) |
 | 05 | Disponibilidad | [episodio-05-disponibilidad.md](episodio-05-disponibilidad.md) |
+| 06 | Cancelación y reinicio | [episodio-06-cancelacion.md](episodio-06-cancelacion.md) |
