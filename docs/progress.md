@@ -6,8 +6,8 @@ curso · ⏳ pendiente. "PR abierto" significa que espera revisión y merge huma
 | # | Feature | Rama | Estado | Pruebas |
 | :-: | :--- | :--- | :--- | :--- |
 | 1 | Harness del agente y documentación | `feature/harness-agentes` | 🔄 PR #1 abierto | n/a (sin código) |
-| 2 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | 🔄 PR abierto | 5/5 ✅ |
-| 3 | Crear reserva con validaciones | `feature/crear-reserva` | ⏳ | — |
+| 2 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | 🔄 PR #2 abierto | 5/5 ✅ |
+| 3 | Crear reserva con validaciones | `feature/crear-reserva` | 🔄 PR abierto | 27/27 ✅ |
 | 4 | Reglas de superposición | `feature/reglas-superposicion` | ⏳ | — |
 | 5 | Consulta de disponibilidad | `feature/disponibilidad` | ⏳ | — |
 | 6 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ⏳ | — |
@@ -19,10 +19,10 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 
 | Requisito | Prueba | Estado |
 | :--- | :--- | :--- |
-| Creación válida | — | ⏳ |
+| Creación válida | `test_crear_reserva.py::test_creacion_valida_devuelve_201_y_reserva_activa` | ✅ |
 | Rechazo por superposición | — | ⏳ |
 | Límites consecutivos | — | ⏳ |
 | Unidades distintas simultáneas | — | ⏳ |
-| Entradas inválidas (solicitante vacío, inicio ≥ fin, unidad inexistente) | — | ⏳ |
+| Entradas inválidas (solicitante vacío, inicio ≥ fin, unidad inexistente) | `test_crear_reserva.py::test_rechaza_*` | ✅ |
 | Cancelación conserva registro y libera horario | — | ⏳ |
 | Persistencia de activas y canceladas tras reiniciar | — | ⏳ |

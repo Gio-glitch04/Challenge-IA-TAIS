@@ -87,3 +87,53 @@ documentación `docs/` (progreso, decisiones, prompts y evidencia).
 `fastapi.testclient` muestra un aviso de deprecación que recomienda `httpx2`. Se mantiene
 `httpx==0.28.1` porque es la librería que pide la especificación y funciona correctamente;
 el aviso no afecta los resultados.
+
+---
+
+## Feature 3 — Crear reserva (`feature/crear-reserva`)
+
+**Qué agrega:** `app/esquemas.py` (modelos Pydantic), `app/servicios.py` (reglas de
+negocio), `POST /reservas`, `GET /reservas/{id}` y 27 pruebas en total.
+
+### ADR-008 — Formato de fechas y zona horaria
+
+- **Decisión:** fechas en ISO 8601 **sin zona horaria** (`AAAA-MM-DDTHH:MM[:SS]`),
+  interpretadas como hora local del laboratorio. Se rechaza con 422 cualquier fecha con
+  offset (`+00:00`, `Z`), con microsegundos, o que no sea texto (por ejemplo un timestamp
+  numérico).
+- **Motivo:** el laboratorio es un único sitio; mezclar fechas con y sin zona haría
+  ambiguas las comparaciones de superposición. Rechazar es más claro que convertir en
+  silencio.
+- **Alternativa descartada:** normalizar todo a UTC. Obligaría al usuario a pensar en UTC
+  para reservar "de 10 a 11".
+- **Consecuencia:** las fechas se guardan como texto con formato fijo
+  `%Y-%m-%dT%H:%M:%S`, que ordena igual que el tiempo, así SQLite puede comparar
+  intervalos como texto.
+
+### ADR-009 — Reservas en el pasado y límites de duración
+
+- **Decisión:** se rechaza crear una reserva cuyo **inicio** sea anterior al momento actual
+  del servidor. No hay límite de duración máxima ni de anticipación.
+- **Motivo:** reservar algo que ya pasó no tiene sentido operativo. La consigna no pide
+  límites de duración y agregarlos sería un requisito inventado.
+- **Consecuencia:** las pruebas usan fechas de 2030. La consulta de disponibilidad sí
+  acepta intervalos pasados (feature 5).
+
+### ADR-010 — Validación en dos capas y códigos HTTP
+
+- **Decisión:** el formato (fechas, solicitante, inicio < fin) lo valida Pydantic en
+  `app/esquemas.py`; lo que necesita la base (unidad existente) lo valida
+  `app/servicios.py`. Toda entrada inválida responde **422**; una reserva inexistente,
+  **404**.
+- **Motivo:** la unidad inexistente es un dato inválido del pedido, igual que un
+  solicitante vacío, y conviene que el cliente reciba el mismo código.
+- **Alternativa descartada:** 404 para unidad inexistente.
+- **Consecuencia:** `app/servicios.py` no conoce HTTP; `app/main.py` traduce
+  `EntradaInvalida` → 422 y `NoEncontrada` → 404.
+
+### ADR-011 — Identificador y solicitante
+
+- **Decisión:** el id es un UUID4. Al solicitante se le quitan los espacios de los extremos
+  y tiene un máximo de 100 caracteres.
+- **Motivo:** un UUID no se puede adivinar ni se repite entre reinicios. Guardar el nombre
+  sin espacios extremos evita duplicados visuales.
