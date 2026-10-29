@@ -1,0 +1,232 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Reservas de laboratorio</title>
+<style>
+  :root { --borde: #d0d4da; --fondo: #f6f7f9; --texto: #1d2530; --suave: #5b6573;
+          --acento: #1f5fbf; --ok: #1b7a3d; --error: #b3261e; }
+  * { box-sizing: border-box; }
+  body { margin: 0; font-family: system-ui, "Segoe UI", sans-serif; color: var(--texto);
+         background: var(--fondo); line-height: 1.4; }
+  header { background: #fff; border-bottom: 1px solid var(--borde); padding: 14px 20px; }
+  header h1 { margin: 0; font-size: 1.25rem; }
+  header p { margin: 4px 0 0; color: var(--suave); font-size: .9rem; }
+  main { max-width: 1100px; margin: 0 auto; padding: 16px; display: grid; gap: 16px;
+         grid-template-columns: repeat(auto-fit, minmax(320px, 1fr)); }
+  section { background: #fff; border: 1px solid var(--borde); border-radius: 8px; padding: 16px; }
+  section.ancho { grid-column: 1 / -1; }
+  h2 { margin: 0 0 12px; font-size: 1.05rem; }
+  label { display: block; font-size: .85rem; color: var(--suave); margin: 8px 0 2px; }
+  input, select, button { font: inherit; padding: 6px 8px; border: 1px solid var(--borde);
+                          border-radius: 6px; width: 100%; background: #fff; }
+  button { background: var(--acento); color: #fff; border: none; cursor: pointer;
+           margin-top: 12px; width: auto; padding: 7px 14px; }
+  button.secundario { background: #fff; color: var(--error); border: 1px solid var(--error);
+                      margin: 0; padding: 3px 10px; }
+  .fila { display: flex; gap: 8px; flex-wrap: wrap; align-items: flex-end; }
+  .fila > div { flex: 1 1 140px; }
+  .mensaje { margin-top: 12px; padding: 8px 10px; border-radius: 6px; font-size: .9rem; display: none; }
+  .mensaje.ok { display: block; background: #e8f5ec; color: var(--ok); }
+  .mensaje.error { display: block; background: #fbeaea; color: var(--error); }
+  table { width: 100%; border-collapse: collapse; font-size: .9rem; }
+  th, td { text-align: left; padding: 6px 8px; border-bottom: 1px solid var(--borde); }
+  th { color: var(--suave); font-weight: 600; }
+  .estado-activa { color: var(--ok); font-weight: 600; }
+  .estado-cancelada { color: var(--suave); }
+  .tabla-scroll { overflow-x: auto; }
+  ul.unidades { margin: 0; padding-left: 18px; }
+  a { color: var(--acento); }
+</style>
+</head>
+<body>
+<header>
+  <h1>Reservas de laboratorio</h1>
+  <p>Interfaz de prueba sobre la API local. Las mismas operaciones están en
+     <a href="/docs">/docs</a>. Fechas en hora local del laboratorio.</p>
+</header>
+<main>
+  <section>
+    <h2>Inventario</h2>
+    <ul class="unidades" id="lista-unidades"><li>Cargando…</li></ul>
+  </section>
+
+  <section>
+    <h2>Consultar disponibilidad</h2>
+    <form id="form-disponibilidad">
+      <label for="disp-unidad">Unidad</label>
+      <select id="disp-unidad" class="select-unidad" required></select>
+      <div class="fila">
+        <div><label for="disp-inicio">Inicio</label><input type="datetime-local" id="disp-inicio" required></div>
+        <div><label for="disp-fin">Fin</label><input type="datetime-local" id="disp-fin" required></div>
+      </div>
+      <button type="submit">Consultar</button>
+    </form>
+    <div class="mensaje" id="msg-disponibilidad"></div>
+  </section>
+
+  <section>
+    <h2>Crear reserva</h2>
+    <form id="form-reserva">
+      <label for="res-unidad">Unidad</label>
+      <select id="res-unidad" class="select-unidad" required></select>
+      <label for="res-solicitante">Solicitante</label>
+      <input id="res-solicitante" maxlength="100" placeholder="Nombre ficticio, por ejemplo Ana Prueba">
+      <div class="fila">
+        <div><label for="res-inicio">Inicio</label><input type="datetime-local" id="res-inicio" required></div>
+        <div><label for="res-fin">Fin</label><input type="datetime-local" id="res-fin" required></div>
+      </div>
+      <button type="submit">Reservar</button>
+    </form>
+    <div class="mensaje" id="msg-reserva"></div>
+  </section>
+
+  <section class="ancho">
+    <h2>Reservas</h2>
+    <div class="fila">
+      <div><label for="filtro-unidad">Unidad</label>
+        <select id="filtro-unidad"><option value="">Todas</option></select></div>
+      <div><label for="filtro-estado">Estado</label>
+        <select id="filtro-estado">
+          <option value="">Todos</option><option value="activa">Activa</option><option value="cancelada">Cancelada</option>
+        </select></div>
+    </div>
+    <div class="mensaje" id="msg-reservas"></div>
+    <div class="tabla-scroll">
+      <table id="tabla-reservas">
+        <thead><tr><th>Unidad</th><th>Solicitante</th><th>Inicio</th><th>Fin</th><th>Estado</th><th>Id</th><th></th></tr></thead>
+        <tbody></tbody>
+      </table>
+    </div>
+  </section>
+</main>
+<script>
+// La página no tiene reglas propias: todas las validaciones las hace la API.
+const $ = (id) => document.getElementById(id);
+
+function mostrar(id, texto, tipo) {
+  const caja = $(id);
+  caja.textContent = texto;
+  caja.className = "mensaje " + tipo;
+}
+
+function textoDeError(cuerpo, estado) {
+  const detalle = cuerpo && cuerpo.detail;
+  if (Array.isArray(detalle)) {
+    return detalle.map((d) => (d.loc ? d.loc[d.loc.length - 1] + ": " : "") + d.msg).join(" · ");
+  }
+  return detalle || "Error " + estado;
+}
+
+async function llamar(metodo, ruta, cuerpo) {
+  const opciones = { method: metodo, headers: {} };
+  if (cuerpo !== undefined) {
+    opciones.headers["Content-Type"] = "application/json";
+    opciones.body = JSON.stringify(cuerpo);
+  }
+  const respuesta = await fetch(ruta, opciones);
+  const datos = await respuesta.json().catch(() => null);
+  if (!respuesta.ok) throw new Error(respuesta.status + " · " + textoDeError(datos, respuesta.status));
+  return datos;
+}
+
+// datetime-local da "AAAA-MM-DDTHH:MM"; la API acepta ese formato (ADR-005).
+const fecha = (id) => $(id).value;
+const legible = (iso) => iso.replace("T", " ");
+
+async function cargarUnidades() {
+  const unidades = await llamar("GET", "/unidades");
+  const lista = $("lista-unidades");
+  lista.replaceChildren();
+  for (const u of unidades) {
+    const li = document.createElement("li");
+    li.textContent = u.id + " · " + u.equipo;
+    lista.append(li);
+  }
+  for (const select of document.querySelectorAll(".select-unidad, #filtro-unidad")) {
+    for (const u of unidades) select.append(new Option(u.id + " · " + u.equipo, u.id));
+  }
+}
+
+async function cargarReservas() {
+  const parametros = new URLSearchParams();
+  if ($("filtro-unidad").value) parametros.set("unidad_id", $("filtro-unidad").value);
+  if ($("filtro-estado").value) parametros.set("estado", $("filtro-estado").value);
+  const cuerpo = $("tabla-reservas").querySelector("tbody");
+  try {
+    const reservas = await llamar("GET", "/reservas?" + parametros);
+    cuerpo.replaceChildren();
+    for (const r of reservas) {
+      const fila = cuerpo.insertRow();
+      for (const valor of [r.unidad_id, r.solicitante, legible(r.inicio), legible(r.fin)]) {
+        fila.insertCell().textContent = valor;
+      }
+      const celdaEstado = fila.insertCell();
+      celdaEstado.textContent = r.estado;
+      celdaEstado.className = "estado-" + r.estado;
+      fila.insertCell().textContent = r.id.slice(0, 8);
+      const celdaAccion = fila.insertCell();
+      if (r.estado === "activa") {
+        const boton = document.createElement("button");
+        boton.textContent = "Cancelar";
+        boton.className = "secundario";
+        boton.onclick = () => cancelar(r.id);
+        celdaAccion.append(boton);
+      }
+    }
+    if (!reservas.length) cuerpo.insertRow().insertCell().textContent = "No hay reservas.";
+  } catch (error) {
+    mostrar("msg-reservas", error.message, "error");
+  }
+}
+
+async function cancelar(id) {
+  try {
+    await llamar("POST", "/reservas/" + id + "/cancelar");
+    mostrar("msg-reservas", "Reserva cancelada. El registro se conserva y el horario queda libre.", "ok");
+  } catch (error) {
+    mostrar("msg-reservas", error.message, "error");
+  }
+  cargarReservas();
+}
+
+$("form-disponibilidad").onsubmit = async (evento) => {
+  evento.preventDefault();
+  const parametros = new URLSearchParams({ inicio: fecha("disp-inicio"), fin: fecha("disp-fin") });
+  try {
+    const d = await llamar("GET", "/unidades/" + $("disp-unidad").value + "/disponibilidad?" + parametros);
+    if (d.disponible) {
+      mostrar("msg-disponibilidad", d.unidad_id + " está libre en ese intervalo.", "ok");
+    } else {
+      const quienes = d.conflictos.map((c) => c.solicitante + " (" + legible(c.inicio) + " a " + legible(c.fin) + ")");
+      mostrar("msg-disponibilidad", d.unidad_id + " está ocupada: " + quienes.join(", "), "error");
+    }
+  } catch (error) {
+    mostrar("msg-disponibilidad", error.message, "error");
+  }
+};
+
+$("form-reserva").onsubmit = async (evento) => {
+  evento.preventDefault();
+  const datos = {
+    unidad_id: $("res-unidad").value,
+    solicitante: $("res-solicitante").value,
+    inicio: fecha("res-inicio"),
+    fin: fecha("res-fin"),
+  };
+  try {
+    const r = await llamar("POST", "/reservas", datos);
+    mostrar("msg-reserva", "Reserva creada para " + r.unidad_id + " (id " + r.id.slice(0, 8) + ").", "ok");
+    cargarReservas();
+  } catch (error) {
+    mostrar("msg-reserva", error.message, "error");
+  }
+};
+
+$("filtro-unidad").onchange = cargarReservas;
+$("filtro-estado").onchange = cargarReservas;
+cargarUnidades().then(cargarReservas).catch((e) => mostrar("msg-reservas", e.message, "error"));
+</script>
+</body>
+</html>
