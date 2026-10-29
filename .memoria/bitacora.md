@@ -50,3 +50,12 @@ Registro cronológico, solo se agregan entradas al final.
   cancelación y reinicio (05) y la corrección de la organización de PRs (#2 a #8 cerrados,
   rehechos como #9 a #14).
 - Ejemplo de entrada y salida ejecutado con TestClient; `python -m pytest -q` → 69 passed.
+
+## 2026-10-29 — docs/readme-windows
+
+- PR #15 (README) mergeado por Giovanni (`c2545e8`).
+- Pedido del autor: instalación y guía de uso al inicio del README, con comandos de Windows.
+- Se movió la guía arriba de la sección 1, con PowerShell (`Invoke-RestMethod`) y las
+  variantes de `cmd`. Los endpoints de la guía se ejecutaron con `curl` contra Uvicorn
+  (Linux); PowerShell no está disponible en el contenedor.
+- `python -m pytest -q` → 69 passed.

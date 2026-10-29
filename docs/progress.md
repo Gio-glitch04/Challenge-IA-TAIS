@@ -30,4 +30,5 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 
 | Entregable | Rama | Estado |
 | :--- | :--- | :--- |
-| README con las 4 secciones de la consigna y 3 episodios | `docs/readme` | 🔄 PR abierto |
+| README con las 4 secciones de la consigna y 3 episodios | `docs/readme` | ✅ PR #15 mergeado |
+| Instalación y guía de uso para Windows al inicio del README | `docs/readme-windows` | 🔄 PR abierto |
