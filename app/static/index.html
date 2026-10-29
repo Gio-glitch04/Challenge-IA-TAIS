@@ -114,7 +114,11 @@ function mostrar(id, texto, tipo) {
 function textoDeError(cuerpo, estado) {
   const detalle = cuerpo && cuerpo.detail;
   if (Array.isArray(detalle)) {
-    return detalle.map((d) => (d.loc ? d.loc[d.loc.length - 1] + ": " : "") + d.msg).join(" · ");
+    return detalle.map((d) => {
+      const campo = d.loc ? d.loc[d.loc.length - 1] : "body";
+      const texto = d.msg.replace(/^Value error, /, "");
+      return campo === "body" ? texto : campo + ": " + texto;
+    }).join(" · ");
   }
   return detalle || "Error " + estado;
 }
