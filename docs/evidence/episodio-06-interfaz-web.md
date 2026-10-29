@@ -71,4 +71,5 @@ ancho (vista de celular).
 
 ## Decisión humana
 
-**Pendiente:** revisión y merge del PR de esta feature.
+**Aceptado.** Giovanni revisó y mergeó el PR #19 a `main` el 2026-10-29 (merge commit
+`86ee6b1`).
