@@ -12,6 +12,7 @@ from app.esquemas import Reserva, ReservaEntrada
 CODIGOS_HTTP = {
     servicios.EntradaInvalida: 422,
     servicios.NoEncontrada: 404,
+    servicios.Conflicto: 409,
 }
 
 
