@@ -3,7 +3,7 @@ import sqlite3
 import uuid
 from datetime import datetime
 
-from app.esquemas import ReservaEntrada
+from app.esquemas import Intervalo, ReservaEntrada
 
 FORMATO = "%Y-%m-%dT%H:%M:%S"  # formato fijo: permite comparar fechas como texto en SQL
 
@@ -50,6 +50,21 @@ def buscar_conflictos(con: sqlite3.Connection, unidad_id: str, inicio: str, fin:
         (unidad_id, fin, inicio),
     ).fetchall()
     return [dict(f) for f in filas]
+
+
+def consultar_disponibilidad(con: sqlite3.Connection, unidad_id: str, intervalo: Intervalo) -> dict:
+    """Misma regla que la creación: libre si no hay reservas activas superpuestas."""
+    if con.execute("SELECT 1 FROM unidades WHERE id = ?", (unidad_id,)).fetchone() is None:
+        raise NoEncontrada(f"La unidad '{unidad_id}' no existe en el inventario")
+    inicio, fin = a_texto(intervalo.inicio), a_texto(intervalo.fin)
+    conflictos = buscar_conflictos(con, unidad_id, inicio, fin)
+    return {
+        "unidad_id": unidad_id,
+        "inicio": inicio,
+        "fin": fin,
+        "disponible": not conflictos,
+        "conflictos": conflictos,
+    }
 
 
 def obtener_reserva(con: sqlite3.Connection, reserva_id: str) -> dict:

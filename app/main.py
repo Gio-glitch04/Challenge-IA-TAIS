@@ -1,13 +1,13 @@
 """API local de reservas de equipos de laboratorio."""
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Optional
+from typing import Annotated, Optional
 
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Query
 
 from app import servicios
 from app.database import conectar, inicializar_db, ruta_db
-from app.esquemas import Reserva, ReservaEntrada
+from app.esquemas import Disponibilidad, Intervalo, Reserva, ReservaEntrada
 
 CODIGOS_HTTP = {
     servicios.EntradaInvalida: 422,
@@ -43,6 +43,10 @@ def crear_app(ruta: Optional[Path] = None) -> FastAPI:
             lambda con: con.execute("SELECT id, equipo FROM unidades ORDER BY id").fetchall()
         )
         return [dict(f) for f in filas]
+
+    @app.get("/unidades/{unidad_id}/disponibilidad", response_model=Disponibilidad)
+    def consultar_disponibilidad(unidad_id: str, intervalo: Annotated[Intervalo, Query()]):
+        return ejecutar(servicios.consultar_disponibilidad, unidad_id, intervalo)
 
     @app.post("/reservas", response_model=Reserva, status_code=201)
     def crear_reserva(datos: ReservaEntrada):
