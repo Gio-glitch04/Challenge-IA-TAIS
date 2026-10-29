@@ -24,3 +24,9 @@ Registro cronológico, solo se agregan entradas al final.
 - Supuestos documentados: ADR-005 a ADR-008 (fechas sin zona, sin reservas en el pasado,
   sin límites de duración, 422 para unidad inexistente).
 - TDD: `test:` con 21 fallas → `feat:` → 27 passed.
+
+## 2026-10-29 — feature/reglas-superposicion (feature 3)
+
+- PR #11 (feature 2) mergeado por Giovanni (`35afb1b`), sin cambios en los supuestos.
+- El ejemplo de la consigna se usó como fixture de prueba.
+- TDD: `test:` con 7 fallas → `feat:` → 40 passed.

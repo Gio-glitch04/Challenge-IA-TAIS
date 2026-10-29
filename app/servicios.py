@@ -20,6 +20,10 @@ class NoEncontrada(ErrorDeNegocio):
     pass
 
 
+class Conflicto(ErrorDeNegocio):
+    pass
+
+
 def ahora() -> datetime:
     return datetime.now().replace(microsecond=0)
 
@@ -31,6 +35,21 @@ def a_texto(fecha: datetime) -> str:
 def validar_unidad(con: sqlite3.Connection, unidad_id: str) -> None:
     if con.execute("SELECT 1 FROM unidades WHERE id = ?", (unidad_id,)).fetchone() is None:
         raise EntradaInvalida(f"La unidad '{unidad_id}' no existe en el inventario")
+
+
+def buscar_conflictos(con: sqlite3.Connection, unidad_id: str, inicio: str, fin: str) -> list:
+    """Reservas ACTIVAS de la unidad que se superponen con [inicio, fin).
+
+    Dos intervalos semiabiertos se superponen si cada uno empieza antes de que termine
+    el otro. Con desigualdad estricta, un turno que termina a las 11:00 no choca con
+    otro que empieza a las 11:00 (turnos consecutivos permitidos).
+    """
+    filas = con.execute(
+        "SELECT * FROM reservas WHERE unidad_id = ? AND estado = 'activa'"
+        " AND inicio < ? AND ? < fin ORDER BY inicio",
+        (unidad_id, fin, inicio),
+    ).fetchall()
+    return [dict(f) for f in filas]
 
 
 def obtener_reserva(con: sqlite3.Connection, reserva_id: str) -> dict:
@@ -46,6 +65,15 @@ def crear_reserva(con: sqlite3.Connection, datos: ReservaEntrada) -> dict:
     con.execute("BEGIN IMMEDIATE")  # validación + alta en una sola transacción
     try:
         validar_unidad(con, datos.unidad_id)
+        conflictos = buscar_conflictos(
+            con, datos.unidad_id, a_texto(datos.inicio), a_texto(datos.fin)
+        )
+        if conflictos:
+            ids = ", ".join(c["id"] for c in conflictos)
+            raise Conflicto(
+                f"La unidad '{datos.unidad_id}' ya está reservada en ese intervalo"
+                f" (reservas: {ids})"
+            )
         reserva = {
             "id": str(uuid.uuid4()),
             "unidad_id": datos.unidad_id,
