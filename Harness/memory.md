@@ -1,3 +1,6 @@
+> **Nota:** esta plantilla inicial fue reemplazada por el sistema de memoria descrito en
+> [`AGENTS.md`](../AGENTS.md) (`.memoria/` y `docs/`). Se conserva como antecedente.
+
 # Memoria del Agente y Registro de Decisiones
 
 Este archivo sirve para mantener el estado del proyecto, registrar supuestos y documentar los episodios de delegación requeridos por la consigna para el README final. 
