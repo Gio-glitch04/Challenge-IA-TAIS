@@ -75,4 +75,5 @@ POST /reservas {"unidad_id": "MIC-01", "solicitante": "Ana Prueba", "inicio": "2
 
 ## Decisión humana
 
-**Pendiente:** revisión de los supuestos ADR-005 a ADR-008 y merge del PR de esta feature.
+**Aceptado sin cambios.** Giovanni revisó y mergeó el PR #11 a `main` el 2026-10-29
+(merge commit `35afb1b`). Los supuestos ADR-005 a ADR-008 quedaron como estaban.

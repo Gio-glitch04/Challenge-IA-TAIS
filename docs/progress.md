@@ -7,8 +7,8 @@ merge humano.
 | # | Feature | Rama | Estado | Pruebas |
 | :-: | :--- | :--- | :--- | :--- |
 | 1 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | ✅ PR #10 mergeado | 5/5 ✅ |
-| 2 | Crear reserva con validaciones | `feature/crear-reserva` | 🔄 PR abierto | 27/27 ✅ |
-| 3 | Reglas de superposición | `feature/reglas-superposicion` | ⏳ | — |
+| 2 | Crear reserva con validaciones | `feature/crear-reserva` | ✅ PR #11 mergeado | 27/27 ✅ |
+| 3 | Reglas de superposición | `feature/reglas-superposicion` | 🔄 PR abierto | 40/40 ✅ |
 | 4 | Consulta de disponibilidad | `feature/disponibilidad` | ⏳ | — |
 | 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ⏳ | — |
 
@@ -19,9 +19,9 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 | Requisito | Prueba | Estado |
 | :--- | :--- | :--- |
 | Creación válida | `test_crear_reserva.py::test_creacion_valida_devuelve_201_y_reserva_activa` | ✅ |
-| Rechazo por superposición | — | ⏳ |
-| Límites consecutivos | — | ⏳ |
-| Unidades distintas simultáneas | — | ⏳ |
+| Rechazo por superposición | `test_reglas_superposicion.py::test_rechaza_superposicion_del_ejemplo_de_la_consigna` | ✅ |
+| Límites consecutivos | `test_reglas_superposicion.py::test_acepta_turno_que_empieza_cuando_termina_otro` | ✅ |
+| Unidades distintas simultáneas | `test_reglas_superposicion.py::test_acepta_mic02_en_el_mismo_horario_que_mic01` | ✅ |
 | Entradas inválidas (solicitante vacío, inicio ≥ fin, unidad inexistente) | `test_crear_reserva.py::test_rechaza_*` | ✅ |
 | Cancelación conserva registro y libera horario | — | ⏳ |
 | Persistencia de activas y canceladas tras reiniciar | — | ⏳ |
