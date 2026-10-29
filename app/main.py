@@ -1,4 +1,5 @@
 """API local de reservas de equipos de laboratorio."""
+import os
 from contextlib import asynccontextmanager
 from pathlib import Path
 from typing import Annotated, Literal, Optional
@@ -14,6 +15,14 @@ CODIGOS_HTTP = {
     servicios.NoEncontrada: 404,
     servicios.Conflicto: 409,
 }
+
+# El 8000 (default de Uvicorn) suele estar ocupado por otras herramientas.
+PUERTO_POR_DEFECTO = 8765
+
+
+def puerto() -> int:
+    """Puerto de la API: variable LAB_PORT o 8765."""
+    return int(os.environ.get("LAB_PORT", PUERTO_POR_DEFECTO))
 
 
 def crear_app(ruta: Optional[Path] = None) -> FastAPI:
@@ -71,3 +80,9 @@ def crear_app(ruta: Optional[Path] = None) -> FastAPI:
 
 
 app = crear_app()
+
+
+if __name__ == "__main__":
+    import uvicorn
+
+    uvicorn.run(app, host="127.0.0.1", port=puerto())

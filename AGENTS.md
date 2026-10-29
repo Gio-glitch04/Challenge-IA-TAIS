@@ -102,5 +102,5 @@ Las features son solo las de la aplicación. La preparación del entorno (este a
 python -m venv .venv && source .venv/bin/activate
 pip install -r requirements.txt
 python -m pytest -v                       # pruebas
-uvicorn app.main:app --reload             # API local en http://127.0.0.1:8000/docs
+python -m app.main                        # API local en http://127.0.0.1:8765/docs (LAB_PORT para cambiarlo)
 ```

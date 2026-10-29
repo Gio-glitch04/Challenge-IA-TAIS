@@ -206,3 +206,18 @@ pruebas nuevas basadas en el ejemplo de la consigna.
   completa dos veces sobre el mismo archivo. Además, se ejecutó un procedimiento manual con
   Uvicorn real (detener y volver a levantar), documentado con su salida en
   `docs/evidence/episodio-05-cancelacion.md`.
+
+---
+
+## Ajustes posteriores
+
+### ADR-019 — Puerto por defecto 8765
+
+- **Decisión:** la API escucha en `127.0.0.1:8765` cuando se levanta con
+  `python -m app.main`. La variable `LAB_PORT` cambia el puerto.
+- **Motivo:** el autor tenía el 8000, que es el puerto por defecto de Uvicorn, ocupado en su
+  máquina. 8765 es poco común y fácil de recordar.
+- **Alternativa descartada:** pedir `--port` en cada comando de Uvicorn. Es fácil de
+  olvidar y el error ("address already in use") no explica qué hacer.
+- **Consecuencia:** el README y `AGENTS.md` usan el 8765. La evidencia del episodio 05
+  conserva el 8000 porque registra lo que se ejecutó en ese momento.

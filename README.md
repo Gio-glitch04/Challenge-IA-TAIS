@@ -6,7 +6,7 @@ sobre este repositorio, una feature por vez, y cada entrega pasó por revisión 
 humano.
 
 - **Versión entregada:** rama `main`.
-- **Estado de las pruebas:** `python -m pytest -q` da `69 passed` (Python 3.13.17, pytest 9.2.0).
+- **Estado de las pruebas:** `python -m pytest -q` da `71 passed` (Python 3.13.17, pytest 9.2.0).
 
 ## Instalación y guía de uso (Windows)
 
@@ -44,17 +44,21 @@ python -m pip install -r requirements.txt
 python -m pytest -v
 ```
 
-Resultado esperado: `69 passed`, con 1 advertencia de deprecación de httpx; ver
+Resultado esperado: `71 passed`, con 1 advertencia de deprecación de httpx; ver
 [Pendientes y limitaciones](#pendientes-y-limitaciones).
 
 ### Levantar la API
 
 ```powershell
-python -m uvicorn app.main:app
+python -m app.main
 ```
 
-- **Dirección:** la API queda en `http://127.0.0.1:8000`.
-- **Probar desde el navegador:** abrí `http://127.0.0.1:8000/docs`. Desde ahí se puede
+- **Dirección:** la API queda en `http://127.0.0.1:8765`. Se usa el **8765** y no el 8000
+  (el que trae Uvicorn) porque el 8000 suele estar ocupado.
+- **Otro puerto:** si el 8765 también está en uso, definí `LAB_PORT` antes de levantar la
+  API: `$env:LAB_PORT = "9000"` en PowerShell o `set LAB_PORT=9000` en `cmd`.
+- **Con Uvicorn directo:** `python -m uvicorn app.main:app --port 8765` es equivalente.
+- **Probar desde el navegador:** abrí `http://127.0.0.1:8765/docs`. Desde ahí se puede
   probar cada endpoint con "Try it out".
 - **Detenerla:** con `Ctrl+C`.
 - **Datos:** la primera vez se crea `data\laboratorio.db` con el inventario.
@@ -66,21 +70,21 @@ Estos comandos se ejecutan en **otra ventana**, con la API corriendo.
 
 ```powershell
 # 1. Ver el inventario
-Invoke-RestMethod http://127.0.0.1:8000/unidades
+Invoke-RestMethod http://127.0.0.1:8765/unidades
 
 # 2. Consultar disponibilidad de MIC-01 entre 10:00 y 11:00
-Invoke-RestMethod "http://127.0.0.1:8000/unidades/MIC-01/disponibilidad?inicio=2030-05-10T10:00:00&fin=2030-05-10T11:00:00"
+Invoke-RestMethod "http://127.0.0.1:8765/unidades/MIC-01/disponibilidad?inicio=2030-05-10T10:00:00&fin=2030-05-10T11:00:00"
 
 # 3. Crear una reserva (guarda la respuesta en $r)
 $cuerpo = @{ unidad_id = "MIC-01"; solicitante = "Ana Prueba"; inicio = "2030-05-10T10:00:00"; fin = "2030-05-10T11:00:00" } | ConvertTo-Json
-$r = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/reservas -ContentType "application/json" -Body $cuerpo
+$r = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8765/reservas -ContentType "application/json" -Body $cuerpo
 $r
 
 # 4. Listar reservas (filtros opcionales: unidad_id, estado=activa|cancelada)
-Invoke-RestMethod "http://127.0.0.1:8000/reservas?unidad_id=MIC-01"
+Invoke-RestMethod "http://127.0.0.1:8765/reservas?unidad_id=MIC-01"
 
 # 5. Cancelar la reserva creada (se conserva con estado "cancelada")
-Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/reservas/$($r.id)/cancelar"
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8765/reservas/$($r.id)/cancelar"
 ```
 
 **Cómo se leen las respuestas:**
@@ -100,7 +104,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/reservas/$($r.id)/can
 
   ```powershell
   $env:LAB_DB_PATH = "data\pruebas.db"      # en cmd: set LAB_DB_PATH=data\pruebas.db
-  python -m uvicorn app.main:app
+  python -m app.main
   ```
 
 - **Borrar todo:** este comando **BORRA TODAS LAS RESERVAS** y recarga el inventario. Sin
@@ -226,7 +230,7 @@ app/
   database.py      # esquema SQLite e inicialización idempotente
   inventario.json  # inventario inicial (5 unidades)
 scripts/reset_db.py  # reinicio explícito de la base (borra reservas)
-tests/             # 69 pruebas pytest + httpx (TestClient)
+tests/             # 71 pruebas pytest + httpx (TestClient)
 docs/              # decisiones, especificaciones, evidencia y progreso
 .memoria/          # memoria de trabajo del agente (contexto, estado, bitácora)
 AGENTS.md          # instrucciones del agente (harness)
@@ -439,7 +443,7 @@ las fallas reales que se registraron antes de implementar.
 
 ### Decisiones significativas
 
-El registro completo tiene 18 ADR, con motivo, alternativa y consecuencia, y está en
+El registro completo tiene 19 ADR, con motivo, alternativa y consecuencia, y está en
 [`docs/decisions.md`](docs/decisions.md). Estas son las de mayor impacto:
 
 | Decisión | Motivo | Alternativa descartada | Consecuencia |
