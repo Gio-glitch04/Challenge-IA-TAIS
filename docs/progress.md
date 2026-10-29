@@ -6,7 +6,7 @@ merge humano.
 
 | # | Feature | Rama | Estado | Pruebas |
 | :-: | :--- | :--- | :--- | :--- |
-| 1 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | ⏳ | — |
+| 1 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | 🔄 PR abierto | 5/5 ✅ |
 | 2 | Crear reserva con validaciones | `feature/crear-reserva` | ⏳ | — |
 | 3 | Reglas de superposición | `feature/reglas-superposicion` | ⏳ | — |
 | 4 | Consulta de disponibilidad | `feature/disponibilidad` | ⏳ | — |
@@ -14,7 +14,7 @@ merge humano.
 
 ## Requisitos de prueba de la consigna
 
-Comando: `python -m pytest -v`.
+Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 
 | Requisito | Prueba | Estado |
 | :--- | :--- | :--- |

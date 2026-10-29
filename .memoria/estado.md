@@ -1,8 +1,8 @@
 # Estado actual
 
-- **Rama activa:** `chore/preparar-entorno`
-- **Último paso:** se creó el harness (`AGENTS.md`), el sistema de memoria local y el
-  esqueleto de `docs/`.
-- **Próximo paso:** feature 1, `feature/persistencia-inventario`: esquema SQLite, carga del
-  inventario y script de reinicio, empezando por las pruebas.
+- **Rama activa:** `feature/persistencia-inventario` (feature 1)
+- **Último paso:** base SQLite, inventario precargado, `GET /unidades` y `scripts/reset_db.py`;
+  5 pruebas en verde.
+- **Próximo paso:** feature 2, `feature/crear-reserva`: `POST /reservas` con validación de
+  unidad, solicitante y fechas, empezando por las pruebas. Se abre cuando esta feature esté en `main`.
 - **Bloqueos:** ninguno.
