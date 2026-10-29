@@ -10,7 +10,7 @@ merge humano.
 | 2 | Crear reserva con validaciones | `feature/crear-reserva` | ✅ PR #11 mergeado | 27/27 ✅ |
 | 3 | Reglas de superposición | `feature/reglas-superposicion` | ✅ PR #12 mergeado | 40/40 ✅ |
 | 4 | Consulta de disponibilidad | `feature/disponibilidad` | ✅ PR #13 mergeado | 58/58 ✅ |
-| 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | 🔄 PR abierto | 69/69 ✅ |
+| 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ✅ PR #14 mergeado | 69/69 ✅ |
 
 ## Requisitos de prueba de la consigna
 
@@ -25,3 +25,9 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 | Entradas inválidas (solicitante vacío, inicio ≥ fin, unidad inexistente) | `test_crear_reserva.py::test_rechaza_*` | ✅ |
 | Cancelación conserva registro y libera horario | `test_cancelacion.py::test_cancelar_conserva_id_y_todos_los_datos`, `::test_cancelar_libera_el_horario_para_una_nueva_reserva` | ✅ |
 | Persistencia de activas y canceladas tras reiniciar | `test_persistencia_reinicio.py` + procedimiento manual con Uvicorn (episodio 05) | ✅ |
+
+## Documentación final
+
+| Entregable | Rama | Estado |
+| :--- | :--- | :--- |
+| README con las 4 secciones de la consigna y 3 episodios | `docs/readme` | 🔄 PR abierto |

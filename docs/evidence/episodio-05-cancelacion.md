@@ -71,4 +71,5 @@ Coincide con lo esperado. El archivo `data/manual-reinicio.db` se borró al term
 
 ## Decisión humana
 
-**Pendiente:** revisión y merge del PR de esta feature.
+**Aceptado.** Giovanni revisó y mergeó el PR #14 a `main` el 2026-10-29 (merge commit
+`b39b09a`).
