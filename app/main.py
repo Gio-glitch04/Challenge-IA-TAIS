@@ -1,7 +1,7 @@
 """API local de reservas de equipos de laboratorio."""
 from contextlib import asynccontextmanager
 from pathlib import Path
-from typing import Annotated, Optional
+from typing import Annotated, Literal, Optional
 
 from fastapi import FastAPI, HTTPException, Query
 
@@ -51,6 +51,17 @@ def crear_app(ruta: Optional[Path] = None) -> FastAPI:
     @app.post("/reservas", response_model=Reserva, status_code=201)
     def crear_reserva(datos: ReservaEntrada):
         return ejecutar(servicios.crear_reserva, datos)
+
+    @app.get("/reservas", response_model=list[Reserva])
+    def listar_reservas(
+        unidad_id: Optional[str] = None,
+        estado: Optional[Literal["activa", "cancelada"]] = None,
+    ):
+        return ejecutar(servicios.listar_reservas, unidad_id, estado)
+
+    @app.post("/reservas/{reserva_id}/cancelar", response_model=Reserva)
+    def cancelar_reserva(reserva_id: str):
+        return ejecutar(servicios.cancelar_reserva, reserva_id)
 
     @app.get("/reservas/{reserva_id}", response_model=Reserva)
     def obtener_reserva(reserva_id: str):

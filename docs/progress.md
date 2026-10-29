@@ -9,8 +9,8 @@ merge humano.
 | 1 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | ✅ PR #10 mergeado | 5/5 ✅ |
 | 2 | Crear reserva con validaciones | `feature/crear-reserva` | ✅ PR #11 mergeado | 27/27 ✅ |
 | 3 | Reglas de superposición | `feature/reglas-superposicion` | ✅ PR #12 mergeado | 40/40 ✅ |
-| 4 | Consulta de disponibilidad | `feature/disponibilidad` | 🔄 PR abierto | 58/58 ✅ |
-| 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ⏳ | — |
+| 4 | Consulta de disponibilidad | `feature/disponibilidad` | ✅ PR #13 mergeado | 58/58 ✅ |
+| 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | 🔄 PR abierto | 69/69 ✅ |
 
 ## Requisitos de prueba de la consigna
 
@@ -23,5 +23,5 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 | Límites consecutivos | `test_reglas_superposicion.py::test_acepta_turno_que_empieza_cuando_termina_otro` | ✅ |
 | Unidades distintas simultáneas | `test_reglas_superposicion.py::test_acepta_mic02_en_el_mismo_horario_que_mic01` | ✅ |
 | Entradas inválidas (solicitante vacío, inicio ≥ fin, unidad inexistente) | `test_crear_reserva.py::test_rechaza_*` | ✅ |
-| Cancelación conserva registro y libera horario | — | ⏳ |
-| Persistencia de activas y canceladas tras reiniciar | — | ⏳ |
+| Cancelación conserva registro y libera horario | `test_cancelacion.py::test_cancelar_conserva_id_y_todos_los_datos`, `::test_cancelar_libera_el_horario_para_una_nueva_reserva` | ✅ |
+| Persistencia de activas y canceladas tras reiniciar | `test_persistencia_reinicio.py` + procedimiento manual con Uvicorn (episodio 05) | ✅ |

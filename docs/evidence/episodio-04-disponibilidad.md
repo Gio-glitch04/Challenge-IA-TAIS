@@ -64,4 +64,5 @@ GET /unidades/MIC-02/disponibilidad?inicio=2030-05-10T10:00:00&fin=2030-05-10T11
 
 ## Decisión humana
 
-**Pendiente:** revisión y merge del PR de esta feature.
+**Aceptado.** Giovanni revisó y mergeó el PR #13 a `main` el 2026-10-29 (merge commit
+`984b841`).

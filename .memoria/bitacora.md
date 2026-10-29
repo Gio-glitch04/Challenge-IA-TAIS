@@ -35,3 +35,10 @@ Registro cronológico, solo se agregan entradas al final.
 
 - PR #12 (feature 3) mergeado por Giovanni (`5f7371b`).
 - TDD: `test:` con 16 fallas → `feat:` → 58 passed.
+
+## 2026-10-29 — feature/cancelacion (feature 5)
+
+- PR #13 (feature 4) mergeado por Giovanni (`984b841`).
+- TDD: `test:` con 10 fallas → `feat:` → 69 passed.
+- Procedimiento manual: 2 ejecuciones de Uvicorn sobre `data/manual-reinicio.db`; la
+  reserva activa y la cancelada se recuperaron con sus datos (archivo borrado al final).
