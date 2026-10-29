@@ -42,3 +42,11 @@ Registro cronológico, solo se agregan entradas al final.
 - TDD: `test:` con 10 fallas → `feat:` → 69 passed.
 - Procedimiento manual: 2 ejecuciones de Uvicorn sobre `data/manual-reinicio.db`; la
   reserva activa y la cancelada se recuperaron con sus datos (archivo borrado al final).
+
+## 2026-10-29 — docs/readme
+
+- PR #14 (feature 5) mergeado por Giovanni (`b39b09a`).
+- README final con las 4 secciones de la consigna. Episodios elegidos: superposición (03),
+  cancelación y reinicio (05) y la corrección de la organización de PRs (#2 a #8 cerrados,
+  rehechos como #9 a #14).
+- Ejemplo de entrada y salida ejecutado con TestClient; `python -m pytest -q` → 69 passed.

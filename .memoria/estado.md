@@ -1,9 +1,10 @@
 # Estado actual
 
-- **Rama activa:** `feature/cancelacion` (feature 5)
-- **Último paso:** cancelación que conserva el registro, listado con filtros, prueba de
-  reinicio y verificación manual con Uvicorn; 69 pruebas en verde. Todas las reglas y
-  pruebas de la consigna están cubiertas.
-- **Próximo paso:** README final con las 4 secciones de la consigna (especificación,
-  solución, preparación del agente, registro de decisiones con 3 episodios).
+- **Rama activa:** `docs/readme`
+- **Último paso:** las 5 features están en `main` (PR #14 mergeado, `b39b09a`); 69 pruebas
+  en verde. README final escrito con especificación, solución, preparación del agente y
+  registro de decisiones con 3 episodios (A: superposición, B: cancelación y reinicio,
+  C: organización de la entrega, corregida por el autor).
+- **Próximo paso:** revisión y merge del PR del README. Después, solo correcciones que
+  pida el autor.
 - **Bloqueos:** ninguno.
