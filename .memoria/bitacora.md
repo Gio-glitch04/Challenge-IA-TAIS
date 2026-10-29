@@ -17,3 +17,10 @@ Registro cronológico, solo se agregan entradas al final.
 - TDD: commit `test:` con las pruebas en rojo, después commit `feat:` con la implementación.
 - `python -m pytest -v` → 5 passed.
 - Prueba manual: `uvicorn app.main:app` + `curl /unidades` devolvió las 5 unidades.
+
+## 2026-10-29 — feature/crear-reserva (feature 2)
+
+- PR #10 (feature 1) mergeado por Giovanni (`41a4c02`).
+- Supuestos documentados: ADR-005 a ADR-008 (fechas sin zona, sin reservas en el pasado,
+  sin límites de duración, 422 para unidad inexistente).
+- TDD: `test:` con 21 fallas → `feat:` → 27 passed.

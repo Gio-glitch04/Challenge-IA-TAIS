@@ -47,4 +47,5 @@ $ curl -s localhost:8011/unidades
 
 ## Decisión humana
 
-**Pendiente:** revisión y merge del PR de esta feature.
+**Aceptado.** Giovanni revisó y mergeó el PR #10 a `main` el 2026-10-29 (merge commit
+`41a4c02`).
