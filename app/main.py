@@ -5,6 +5,7 @@ from pathlib import Path
 from typing import Annotated, Literal, Optional
 
 from fastapi import FastAPI, HTTPException, Query
+from fastapi.responses import FileResponse
 
 from app import servicios
 from app.database import conectar, inicializar_db, ruta_db
@@ -15,6 +16,8 @@ CODIGOS_HTTP = {
     servicios.NoEncontrada: 404,
     servicios.Conflicto: 409,
 }
+
+PAGINA = Path(__file__).parent / "static" / "index.html"
 
 # El 8000 (default de Uvicorn) y el 8765 estaban ocupados en la máquina del autor.
 PUERTO_POR_DEFECTO = 8800
@@ -45,6 +48,11 @@ def crear_app(ruta: Optional[Path] = None) -> FastAPI:
             raise HTTPException(CODIGOS_HTTP[type(error)], str(error))
         finally:
             con.close()
+
+    @app.get("/", include_in_schema=False)
+    def interfaz_web():
+        """Página de prueba: solo llama a los endpoints de abajo, no tiene reglas propias."""
+        return FileResponse(PAGINA, media_type="text/html")
 
     @app.get("/unidades")
     def listar_unidades():

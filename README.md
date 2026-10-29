@@ -1,12 +1,13 @@
 # Reservas de equipos de laboratorio
 
 API local para consultar disponibilidad, reservar y cancelar unidades de un laboratorio
-sin superposiciones y sin perder el historial. La construyó un agente de programación
+sin superposiciones y sin perder el historial. Incluye una página web simple para usarla
+desde el navegador. La construyó un agente de programación
 sobre este repositorio, una feature por vez, y cada entrega pasó por revisión y merge
 humano.
 
 - **Versión entregada:** rama `main`.
-- **Estado de las pruebas:** `python -m pytest -q` da `71 passed` (Python 3.13.17, pytest 9.2.0).
+- **Estado de las pruebas:** `python -m pytest -q` da `75 passed` (Python 3.13.17, pytest 9.2.0).
 
 ## Instalación y guía de uso (Windows)
 
@@ -44,7 +45,7 @@ python -m pip install -r requirements.txt
 python -m pytest -v
 ```
 
-Resultado esperado: `71 passed`, con 1 advertencia de deprecación de httpx; ver
+Resultado esperado: `75 passed`, con 1 advertencia de deprecación de httpx; ver
 [Pendientes y limitaciones](#pendientes-y-limitaciones).
 
 ### Levantar la API
@@ -54,12 +55,15 @@ python -m app.main
 ```
 
 - **Dirección:** la API queda en `http://127.0.0.1:8800`. Se usa el **8800** porque el 8000
-  (el que trae Uvicorn) y el 8800 estaban ocupados.
+  (el que trae Uvicorn) y el 8765 estaban ocupados.
 - **Otro puerto:** si el 8800 también está en uso, definí `LAB_PORT` antes de levantar la
   API: `$env:LAB_PORT = "9000"` en PowerShell o `set LAB_PORT=9000` en `cmd`.
 - **Con Uvicorn directo:** `python -m uvicorn app.main:app --port 8800` es equivalente.
-- **Probar desde el navegador:** abrí `http://127.0.0.1:8800/docs`. Desde ahí se puede
-  probar cada endpoint con "Try it out".
+- **Usarla desde el navegador:** abrí `http://127.0.0.1:8800/`. La página permite ver el
+  inventario, consultar disponibilidad, crear reservas, filtrar el listado y cancelar, y
+  muestra los mensajes de error de la API tal cual (409, 422).
+- **Documentación interactiva:** en `http://127.0.0.1:8800/docs` se puede probar cada
+  endpoint con "Try it out".
 - **Detenerla:** con `Ctrl+C`.
 - **Datos:** la primera vez se crea `data\laboratorio.db` con el inventario.
 - **Reinicios:** detener y volver a levantar la API **no borra** las reservas.
@@ -153,8 +157,11 @@ cancelar sin perder el historial.
 
 **Persistencia.** Las reservas y sus estados se recuperan al reiniciar la aplicación.
 
-**Fuera de alcance:** autenticación, roles, notificaciones, interfaz gráfica, pagos,
-concurrencia distribuida e integraciones externas.
+**Interfaz.** La interfaz principal es la API. Para probarla sin herramientas, la misma app
+sirve en `/` una página web mínima que solo llama a esos endpoints y no tiene reglas propias.
+
+**Fuera de alcance:** autenticación, roles, notificaciones, interfaz gráfica compleja,
+pagos, concurrencia distribuida e integraciones externas.
 
 ### Reglas de negocio
 
@@ -210,7 +217,7 @@ completa está en [`docs/progress.md`](docs/progress.md).
 
 - **Especificación inicial:** `Harness/specs.md` (`97541e7`).
 - **Preparación del entorno del agente:** PR #9.
-- **Features:** cinco PRs, de #10 a #14, cada uno con un commit `test:` en rojo, un `feat:`
+- **Features:** seis PRs, de #10 a #14 más el de la interfaz web, cada uno con un commit `test:` en rojo, un `feat:`
   en verde y la documentación.
 - **Decisiones y especificación por feature:** las decisiones de cada feature son una
   sección de [`docs/decisions.md`](docs/decisions.md), y su especificación técnica está en
@@ -229,8 +236,9 @@ app/
   esquemas.py      # modelos Pydantic y validación de fechas, solicitante e intervalo
   database.py      # esquema SQLite e inicialización idempotente
   inventario.json  # inventario inicial (5 unidades)
+  static/index.html  # página web de prueba (HTML + JS sin dependencias)
 scripts/reset_db.py  # reinicio explícito de la base (borra reservas)
-tests/             # 71 pruebas pytest + httpx (TestClient)
+tests/             # 75 pruebas pytest + httpx (TestClient)
 docs/              # decisiones, especificaciones, evidencia y progreso
 .memoria/          # memoria de trabajo del agente (contexto, estado, bitácora)
 AGENTS.md          # instrucciones del agente (harness)
@@ -275,6 +283,7 @@ carga el inventario con `INSERT OR IGNORE`, así que nunca toca las reservas exi
 
 | Método y ruta | Uso | Códigos |
 | :--- | :--- | :--- |
+| `GET /` | Página web para usar la API desde el navegador | 200 |
 | `GET /unidades` | Lista el inventario | 200 |
 | `GET /unidades/{id}/disponibilidad?inicio=&fin=` | Indica si la unidad está libre y qué reservas la ocupan | 200, 404, 422 |
 | `POST /reservas` | Crea una reserva | 201, 409, 422 |
@@ -312,6 +321,9 @@ están la cancelación y el reinicio con `curl` y Uvicorn real.
   el pasado" usa la hora local nueva.
 - **Edición:** no se puede editar una reserva ni revertir una cancelación. Para cambiar
   algo, se cancela y se crea otra.
+- **Página web:** es para probar a mano; no hay usuarios ni permisos, y no se prueba de
+  forma automática en un navegador (las pruebas verifican que se sirva y que use los
+  endpoints de la API).
 - **Dependencias transitivas:** `requirements.txt` fija solo las dependencias directas; no
   hay un archivo de bloqueo de las transitivas.
 - **Advertencia de httpx:** las pruebas muestran 1 advertencia de deprecación, porque
@@ -443,7 +455,7 @@ las fallas reales que se registraron antes de implementar.
 
 ### Decisiones significativas
 
-El registro completo tiene 19 ADR, con motivo, alternativa y consecuencia, y está en
+El registro completo tiene 22 ADR, con motivo, alternativa y consecuencia, y está en
 [`docs/decisions.md`](docs/decisions.md). Estas son las de mayor impacto:
 
 | Decisión | Motivo | Alternativa descartada | Consecuencia |
@@ -455,10 +467,11 @@ El registro completo tiene 19 ADR, con motivo, alternativa y consecuencia, y est
 | Superposición: 409 con los ids en conflicto (ADR-010) | El pedido es válido en forma, pero choca con el estado actual | 422 | El cliente sabe con qué reserva choca |
 | Verificar y dar de alta en `BEGIN IMMEDIATE` (ADR-011) | Evita la doble reserva entre pedidos simultáneos | Verificar fuera de la transacción | La concurrencia queda acotada a un solo proceso |
 | Cancelar es cambiar el estado, con `POST …/cancelar` (ADR-015, ADR-016) | Conserva el registro; `DELETE` sugiere borrar | `DELETE` o `PATCH` | El historial se puede consultar |
+| Página web servida por la misma app, sin framework (ADR-021) | Probar la API sin herramientas, sin dependencias nuevas | Una SPA aparte o una interfaz con plantillas | Las reglas siguen solo en la API |
 
 ### Tres episodios de delegación
 
-Hubo cinco episodios, uno por feature, documentados en
+Hubo seis episodios, uno por feature, documentados en
 [`docs/evidence/`](docs/evidence/). Acá se detallan tres: dos sobre reglas críticas y uno
 sobre la organización de la entrega, que el autor corrigió.
 

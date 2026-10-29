@@ -15,7 +15,8 @@
   - una reserva cancelada no bloquea y se conserva en la base.
 - **Persistencia:** archivo SQLite; reiniciar Uvicorn no borra datos. El borrado solo se
   hace con un script explícito.
-- **Fuera de alcance:** autenticación, roles, notificaciones, interfaz gráfica,
+- **Interfaz:** API REST; `GET /` sirve una página web de prueba que solo usa esa API.
+- **Fuera de alcance:** autenticación, roles, notificaciones, interfaz gráfica compleja,
   concurrencia distribuida, integraciones externas.
 - **Convenciones:** código y documentación en español; ramas `feature/*`; commits
   semánticos; sin el nombre del asistente en ramas, commits ni PRs.

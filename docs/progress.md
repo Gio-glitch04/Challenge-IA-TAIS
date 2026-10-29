@@ -11,6 +11,7 @@ merge humano.
 | 3 | Reglas de superposición | `feature/reglas-superposicion` | ✅ PR #12 mergeado | 40/40 ✅ |
 | 4 | Consulta de disponibilidad | `feature/disponibilidad` | ✅ PR #13 mergeado | 58/58 ✅ |
 | 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ✅ PR #14 mergeado | 69/69 ✅ |
+| 6 | Interfaz web en `/` | `feature/interfaz-web` | 🔄 PR abierto | 75/75 ✅ |
 
 ## Requisitos de prueba de la consigna
 
@@ -33,4 +34,4 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 | README con las 4 secciones de la consigna y 3 episodios | `docs/readme` | ✅ PR #15 mergeado |
 | Instalación y guía de uso para Windows al inicio del README | `docs/readme-windows` | ✅ PR #16 mergeado |
 | Puerto por defecto 8765 (`LAB_PORT` para cambiarlo), 71/71 ✅ | `fix/puerto-api` | ✅ PR #17 mergeado |
-| Puerto por defecto 8800 (el 8765 también estaba ocupado), 71/71 ✅ | `fix/puerto-8800` | 🔄 PR abierto |
+| Puerto por defecto 8800 (el 8765 también estaba ocupado), 71/71 ✅ | `fix/puerto-8800` | ✅ PR #18 mergeado |
