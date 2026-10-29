@@ -1,9 +1,9 @@
 # Reservas de equipos de laboratorio
 
-API local para consultar disponibilidad, reservar y cancelar unidades de un laboratorio
-sin superposiciones y sin perder el historial. Incluye una página web simple para usarla
-desde el navegador. La construyó un agente de programación
-sobre este repositorio, una feature por vez, y cada entrega pasó por revisión y merge
+Aplicación local para consultar disponibilidad, reservar y cancelar unidades de un
+laboratorio sin superposiciones y sin perder el historial. Se usa desde una **interfaz
+web** en el navegador, y todas sus operaciones también están disponibles como **API**.
+La construyó un agente de programación sobre este repositorio, una feature por vez, y cada entrega pasó por revisión y merge
 humano.
 
 - **Versión entregada:** rama `main`.
@@ -48,29 +48,60 @@ python -m pytest -v
 Resultado esperado: `75 passed`, con 1 advertencia de deprecación de httpx; ver
 [Pendientes y limitaciones](#pendientes-y-limitaciones).
 
-### Levantar la API
+### Abrir la aplicación
 
 ```powershell
 python -m app.main
 ```
 
-- **Dirección:** la API queda en `http://127.0.0.1:8800`. Se usa el **8800** porque el 8000
-  (el que trae Uvicorn) y el 8765 estaban ocupados.
-- **Otro puerto:** si el 8800 también está en uso, definí `LAB_PORT` antes de levantar la
-  API: `$env:LAB_PORT = "9000"` en PowerShell o `set LAB_PORT=9000` en `cmd`.
-- **Con Uvicorn directo:** `python -m uvicorn app.main:app --port 8800` es equivalente.
-- **Usarla desde el navegador:** abrí `http://127.0.0.1:8800/`. La página permite ver el
-  inventario, consultar disponibilidad, crear reservas, filtrar el listado y cancelar, y
-  muestra los mensajes de error de la API tal cual (409, 422).
-- **Documentación interactiva:** en `http://127.0.0.1:8800/docs` se puede probar cada
-  endpoint con "Try it out".
-- **Detenerla:** con `Ctrl+C`.
-- **Datos:** la primera vez se crea `data\laboratorio.db` con el inventario.
-- **Reinicios:** detener y volver a levantar la API **no borra** las reservas.
+Con la aplicación corriendo, abrí **`http://127.0.0.1:8800/`** en el navegador.
 
-### Guía de uso desde PowerShell
+- **Puerto:** se usa el **8800** porque el 8000 (el que trae Uvicorn) y el 8765 estaban
+  ocupados. Si el 8800 también está en uso, definí `LAB_PORT` antes de arrancar:
+  `$env:LAB_PORT = "9000"` en PowerShell o `set LAB_PORT=9000` en `cmd`.
+- **Detenerla:** con `Ctrl+C` en la ventana donde corre.
+- **Datos:** la primera vez se crea `data\laboratorio.db` con el inventario. Detener y
+  volver a arrancar **no borra** las reservas.
 
-Estos comandos se ejecutan en **otra ventana**, con la API corriendo.
+### Guía de uso en el navegador
+
+La página tiene cuatro paneles:
+
+| Panel | Para qué sirve |
+| :--- | :--- |
+| **Inventario** | Muestra las 5 unidades del laboratorio. |
+| **Consultar disponibilidad** | Elegís unidad, inicio y fin. Dice si está libre o quién la ocupa. |
+| **Crear reserva** | Elegís unidad, escribís un solicitante ficticio, inicio y fin, y tocás *Reservar*. |
+| **Reservas** | Lista activas y canceladas, con filtros por unidad y estado. El botón *Cancelar* cancela una reserva activa. |
+
+**Recorrido sugerido** con el ejemplo de la consigna:
+
+1. Reservá **MIC-01** de 10:00 a 11:00 de una fecha futura. Aparece en *Reservas* como
+   `activa`.
+2. Intentá reservar **MIC-01** de 10:30 a 11:30. Aparece en rojo
+   `409 · La unidad 'MIC-01' ya está reservada…`.
+3. Reservá **MIC-01** de 11:00 a 12:00. Se acepta porque es un turno consecutivo.
+4. Reservá **MIC-02** de 10:00 a 11:00. Se acepta porque es otra unidad.
+5. Probá un solicitante vacío o un inicio posterior al fin. Responde `422` con el motivo.
+6. En *Consultar disponibilidad*, preguntá por MIC-01 de 10:15 a 10:45: dice que está
+   ocupada y por quién.
+7. Cancelá la primera reserva. Queda en la lista como `cancelada`, y si repetís la
+   consulta, el horario figura libre.
+8. Detené la aplicación, volvé a arrancarla y recargá la página. Las reservas siguen ahí.
+
+Los mensajes de error son los de la API, sin cambios: la página no tiene reglas propias.
+Las fechas son en hora local del laboratorio.
+
+### Uso por API (opcional)
+
+La misma aplicación expone una API REST en `http://127.0.0.1:8800`. Su documentación
+interactiva está en **`http://127.0.0.1:8800/docs`**, donde cada endpoint se puede probar
+con "Try it out". También se puede levantar con Uvicorn directo:
+`python -m uvicorn app.main:app --port 8800`.
+
+#### Desde PowerShell
+
+Estos comandos se ejecutan en **otra ventana**, con la aplicación corriendo.
 
 ```powershell
 # 1. Ver el inventario
@@ -91,7 +122,7 @@ Invoke-RestMethod "http://127.0.0.1:8800/reservas?unidad_id=MIC-01"
 Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8800/reservas/$($r.id)/cancelar"
 ```
 
-**Cómo se leen las respuestas:**
+**Cómo se leen las respuestas de la API:**
 
 - **Superposición:** si una reserva choca con otra activa de la misma unidad, la API
   responde **409**.
@@ -104,7 +135,7 @@ Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8800/reservas/$($r.id)/can
 
 ### Base de datos: otra ubicación y reinicio
 
-- **Usar otro archivo:** definí la variable `LAB_DB_PATH` antes de levantar la API.
+- **Usar otro archivo:** definí la variable `LAB_DB_PATH` antes de arrancar la aplicación.
 
   ```powershell
   $env:LAB_DB_PATH = "data\pruebas.db"      # en cmd: set LAB_DB_PATH=data\pruebas.db
@@ -157,8 +188,9 @@ cancelar sin perder el historial.
 
 **Persistencia.** Las reservas y sus estados se recuperan al reiniciar la aplicación.
 
-**Interfaz.** La interfaz principal es la API. Para probarla sin herramientas, la misma app
-sirve en `/` una página web mínima que solo llama a esos endpoints y no tiene reglas propias.
+**Interfaz.** La aplicación se usa desde una página web en `/`, servida por la misma app,
+y expone las mismas operaciones como API REST. La página solo llama a esa API y no tiene
+reglas propias, así que el comportamiento es el mismo por cualquiera de los dos caminos.
 
 **Fuera de alcance:** autenticación, roles, notificaciones, interfaz gráfica compleja,
 pagos, concurrencia distribuida e integraciones externas.
@@ -236,7 +268,7 @@ app/
   esquemas.py      # modelos Pydantic y validación de fechas, solicitante e intervalo
   database.py      # esquema SQLite e inicialización idempotente
   inventario.json  # inventario inicial (5 unidades)
-  static/index.html  # página web de prueba (HTML + JS sin dependencias)
+  static/index.html  # interfaz web (HTML + JS sin dependencias)
 scripts/reset_db.py  # reinicio explícito de la base (borra reservas)
 tests/             # 75 pruebas pytest + httpx (TestClient)
 docs/              # decisiones, especificaciones, evidencia y progreso
@@ -283,7 +315,7 @@ carga el inventario con `INSERT OR IGNORE`, así que nunca toca las reservas exi
 
 | Método y ruta | Uso | Códigos |
 | :--- | :--- | :--- |
-| `GET /` | Página web para usar la API desde el navegador | 200 |
+| `GET /` | Interfaz web de la aplicación | 200 |
 | `GET /unidades` | Lista el inventario | 200 |
 | `GET /unidades/{id}/disponibilidad?inicio=&fin=` | Indica si la unidad está libre y qué reservas la ocupan | 200, 404, 422 |
 | `POST /reservas` | Crea una reserva | 201, 409, 422 |
@@ -321,9 +353,10 @@ están la cancelación y el reinicio con `curl` y Uvicorn real.
   el pasado" usa la hora local nueva.
 - **Edición:** no se puede editar una reserva ni revertir una cancelación. Para cambiar
   algo, se cancela y se crea otra.
-- **Página web:** es para probar a mano; no hay usuarios ni permisos, y no se prueba de
-  forma automática en un navegador (las pruebas verifican que se sirva y que use los
-  endpoints de la API).
+- **Interfaz web:** no hay usuarios ni permisos. Las pruebas automáticas verifican que se
+  sirva y que use los endpoints de la API; el recorrido en navegador se hizo con Chromium
+  y está registrado en el [episodio 06](docs/evidence/episodio-06-interfaz-web.md), pero
+  no forma parte de `pytest`.
 - **Dependencias transitivas:** `requirements.txt` fija solo las dependencias directas; no
   hay un archivo de bloqueo de las transitivas.
 - **Advertencia de httpx:** las pruebas muestran 1 advertencia de deprecación, porque
@@ -467,7 +500,7 @@ El registro completo tiene 22 ADR, con motivo, alternativa y consecuencia, y est
 | Superposición: 409 con los ids en conflicto (ADR-010) | El pedido es válido en forma, pero choca con el estado actual | 422 | El cliente sabe con qué reserva choca |
 | Verificar y dar de alta en `BEGIN IMMEDIATE` (ADR-011) | Evita la doble reserva entre pedidos simultáneos | Verificar fuera de la transacción | La concurrencia queda acotada a un solo proceso |
 | Cancelar es cambiar el estado, con `POST …/cancelar` (ADR-015, ADR-016) | Conserva el registro; `DELETE` sugiere borrar | `DELETE` o `PATCH` | El historial se puede consultar |
-| Página web servida por la misma app, sin framework (ADR-021) | Probar la API sin herramientas, sin dependencias nuevas | Una SPA aparte o una interfaz con plantillas | Las reglas siguen solo en la API |
+| Interfaz web servida por la misma app, sin framework (ADR-021) | Usar la aplicación sin herramientas, sin dependencias nuevas | Una SPA aparte o una interfaz con plantillas | Las reglas siguen solo en la API |
 
 ### Tres episodios de delegación
 
