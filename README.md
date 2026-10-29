@@ -5,13 +5,115 @@ sin superposiciones y sin perder el historial. La construyó un agente de progra
 sobre este repositorio, una feature por vez, y cada entrega pasó por revisión y merge
 humano.
 
-- **Versión entregada:** rama `main`. El último merge de código es `b39b09a` (PR #14).
+- **Versión entregada:** rama `main`.
 - **Estado de las pruebas:** `python -m pytest -q` da `69 passed` (Python 3.13.17, pytest 9.2.0).
+
+## Instalación y guía de uso (Windows)
+
+Los comandos son para **PowerShell**. Donde cambia algo en `cmd`, se indica aparte.
+
+### Requisitos
+
+- Python 3.10 o superior, instalado desde [python.org](https://www.python.org/downloads/)
+  con la opción *Add python.exe to PATH*. Para comprobarlo: `python --version`.
+- Git, para clonar el repositorio. También se puede descargar como ZIP desde GitHub.
+- No hace falta ninguna cuenta de un modelo de IA.
+
+### Instalación
+
+```powershell
+git clone https://github.com/Gio-glitch04/Challenge-IA-TAIS.git
+cd Challenge-IA-TAIS
+python -m venv .venv
+.\.venv\Scripts\Activate.ps1
+python -m pip install -r requirements.txt
+```
+
+- **En `cmd`:** el entorno se activa con `.venv\Scripts\activate.bat`.
+- **Si PowerShell bloquea `Activate.ps1`** con un error de ejecución de scripts,
+  habilitalos solo para esa ventana y volvé a activar:
+
+  ```powershell
+  Set-ExecutionPolicy -Scope Process -ExecutionPolicy Bypass
+  .\.venv\Scripts\Activate.ps1
+  ```
+
+### Ejecutar las pruebas
+
+```powershell
+python -m pytest -v
+```
+
+Resultado esperado: `69 passed`, con 1 advertencia de deprecación de httpx; ver
+[Pendientes y limitaciones](#pendientes-y-limitaciones).
+
+### Levantar la API
+
+```powershell
+python -m uvicorn app.main:app
+```
+
+- **Dirección:** la API queda en `http://127.0.0.1:8000`.
+- **Probar desde el navegador:** abrí `http://127.0.0.1:8000/docs`. Desde ahí se puede
+  probar cada endpoint con "Try it out".
+- **Detenerla:** con `Ctrl+C`.
+- **Datos:** la primera vez se crea `data\laboratorio.db` con el inventario.
+- **Reinicios:** detener y volver a levantar la API **no borra** las reservas.
+
+### Guía de uso desde PowerShell
+
+Estos comandos se ejecutan en **otra ventana**, con la API corriendo.
+
+```powershell
+# 1. Ver el inventario
+Invoke-RestMethod http://127.0.0.1:8000/unidades
+
+# 2. Consultar disponibilidad de MIC-01 entre 10:00 y 11:00
+Invoke-RestMethod "http://127.0.0.1:8000/unidades/MIC-01/disponibilidad?inicio=2030-05-10T10:00:00&fin=2030-05-10T11:00:00"
+
+# 3. Crear una reserva (guarda la respuesta en $r)
+$cuerpo = @{ unidad_id = "MIC-01"; solicitante = "Ana Prueba"; inicio = "2030-05-10T10:00:00"; fin = "2030-05-10T11:00:00" } | ConvertTo-Json
+$r = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8000/reservas -ContentType "application/json" -Body $cuerpo
+$r
+
+# 4. Listar reservas (filtros opcionales: unidad_id, estado=activa|cancelada)
+Invoke-RestMethod "http://127.0.0.1:8000/reservas?unidad_id=MIC-01"
+
+# 5. Cancelar la reserva creada (se conserva con estado "cancelada")
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8000/reservas/$($r.id)/cancelar"
+```
+
+**Cómo se leen las respuestas:**
+
+- **Superposición:** si una reserva choca con otra activa de la misma unidad, la API
+  responde **409**.
+- **Datos inválidos:** si el solicitante está vacío, las fechas son inválidas o la unidad
+  no existe, responde **422**.
+- **Cómo verlo en PowerShell:** en esos casos `Invoke-RestMethod` muestra el error en rojo,
+  con el mensaje de la API.
+- **Formato de las fechas:** ISO 8601 sin zona horaria (`AAAA-MM-DDTHH:MM:SS`), en hora
+  local del laboratorio.
+
+### Base de datos: otra ubicación y reinicio
+
+- **Usar otro archivo:** definí la variable `LAB_DB_PATH` antes de levantar la API.
+
+  ```powershell
+  $env:LAB_DB_PATH = "data\pruebas.db"      # en cmd: set LAB_DB_PATH=data\pruebas.db
+  python -m uvicorn app.main:app
+  ```
+
+- **Borrar todo:** este comando **BORRA TODAS LAS RESERVAS** y recarga el inventario. Sin
+  `--si` no hace nada.
+
+  ```powershell
+  python -m scripts.reset_db --si
+  ```
 
 | Sección | Contenido |
 | :--- | :--- |
 | [1. Especificación](#1-especificación) | Problema, alcance, reglas, supuestos y criterios de aceptación |
-| [2. Solución](#2-solución) | Estructura, instalación, comandos, ejemplos, datos y limitaciones |
+| [2. Solución](#2-solución) | Estructura, decisiones técnicas, versiones, datos, endpoints, ejemplos y limitaciones |
 | [3. Preparación del agente](#3-preparación-del-agente) | Entorno, modelo, instrucciones, contexto, permisos, adaptación y memoria |
 | [4. Registro de decisiones y delegación](#4-registro-de-decisiones-y-delegación) | Decisiones significativas y los tres episodios de delegación |
 
@@ -151,14 +253,7 @@ AGENTS.md          # instrucciones del agente (harness)
 
 ### Instalación, carga inicial y ejecución
 
-```bash
-python -m venv .venv
-source .venv/bin/activate          # Windows: .venv\Scripts\activate
-pip install -r requirements.txt
-
-uvicorn app.main:app               # API en http://127.0.0.1:8000 (documentación en /docs)
-python -m pytest -v                # pruebas
-```
+Los comandos para Windows están en [Instalación y guía de uso](#instalación-y-guía-de-uso-windows).
 
 **Carga inicial.** Es automática. Al arrancar, la app crea las tablas si no existen y
 carga el inventario con `INSERT OR IGNORE`, así que nunca toca las reservas existentes.
@@ -166,7 +261,7 @@ carga el inventario con `INSERT OR IGNORE`, así que nunca toca las reservas exi
 ### Dónde persisten los datos y cómo reiniciarlos
 
 - **Ubicación:** los datos se guardan en el archivo `data/laboratorio.db`, que no se
-  versiona. Para usar otro archivo, definí la variable `LAB_DB_PATH`.
+  versiona. Para usar otro archivo, definí la variable `LAB_DB_PATH` (ver la [guía](#base-de-datos-otra-ubicación-y-reinicio)).
 - **Reinicio normal:** detener y volver a levantar Uvicorn **no borra nada**.
 - **Borrado explícito:** `python -m scripts.reset_db --si` **borra todas las reservas** y
   recarga el inventario. Sin `--si` no hace nada.
