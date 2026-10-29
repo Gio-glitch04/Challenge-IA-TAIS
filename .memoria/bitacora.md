@@ -66,3 +66,9 @@ Registro cronológico, solo se agregan entradas al final.
 - Pedido del autor: cambiar el puerto porque el 8000 está ocupado en su máquina.
 - TDD: `test:` con error de colección (no existía `puerto`) → `feat:` → 71 passed.
 - Prueba manual: `python -m app.main` respondió en 8765 y con `LAB_PORT=9123` en 9123.
+
+## 2026-10-29 — fix/puerto-8800
+
+- PR #17 (puerto 8765) mergeado por Giovanni.
+- El 8765 también estaba ocupado en su máquina; eligió el 8800.
+- TDD: `test:` con 1 falla → `fix:` → 71 passed. `python -m app.main` respondió en 8800.

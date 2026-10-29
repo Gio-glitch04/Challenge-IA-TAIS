@@ -32,4 +32,5 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 | :--- | :--- | :--- |
 | README con las 4 secciones de la consigna y 3 episodios | `docs/readme` | ✅ PR #15 mergeado |
 | Instalación y guía de uso para Windows al inicio del README | `docs/readme-windows` | ✅ PR #16 mergeado |
-| Puerto por defecto 8765 (`LAB_PORT` para cambiarlo), 71/71 ✅ | `fix/puerto-api` | 🔄 PR abierto |
+| Puerto por defecto 8765 (`LAB_PORT` para cambiarlo), 71/71 ✅ | `fix/puerto-api` | ✅ PR #17 mergeado |
+| Puerto por defecto 8800 (el 8765 también estaba ocupado), 71/71 ✅ | `fix/puerto-8800` | 🔄 PR abierto |

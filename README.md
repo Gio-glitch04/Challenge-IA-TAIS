@@ -53,12 +53,12 @@ Resultado esperado: `71 passed`, con 1 advertencia de deprecación de httpx; ver
 python -m app.main
 ```
 
-- **Dirección:** la API queda en `http://127.0.0.1:8765`. Se usa el **8765** y no el 8000
-  (el que trae Uvicorn) porque el 8000 suele estar ocupado.
-- **Otro puerto:** si el 8765 también está en uso, definí `LAB_PORT` antes de levantar la
+- **Dirección:** la API queda en `http://127.0.0.1:8800`. Se usa el **8800** porque el 8000
+  (el que trae Uvicorn) y el 8800 estaban ocupados.
+- **Otro puerto:** si el 8800 también está en uso, definí `LAB_PORT` antes de levantar la
   API: `$env:LAB_PORT = "9000"` en PowerShell o `set LAB_PORT=9000` en `cmd`.
-- **Con Uvicorn directo:** `python -m uvicorn app.main:app --port 8765` es equivalente.
-- **Probar desde el navegador:** abrí `http://127.0.0.1:8765/docs`. Desde ahí se puede
+- **Con Uvicorn directo:** `python -m uvicorn app.main:app --port 8800` es equivalente.
+- **Probar desde el navegador:** abrí `http://127.0.0.1:8800/docs`. Desde ahí se puede
   probar cada endpoint con "Try it out".
 - **Detenerla:** con `Ctrl+C`.
 - **Datos:** la primera vez se crea `data\laboratorio.db` con el inventario.
@@ -70,21 +70,21 @@ Estos comandos se ejecutan en **otra ventana**, con la API corriendo.
 
 ```powershell
 # 1. Ver el inventario
-Invoke-RestMethod http://127.0.0.1:8765/unidades
+Invoke-RestMethod http://127.0.0.1:8800/unidades
 
 # 2. Consultar disponibilidad de MIC-01 entre 10:00 y 11:00
-Invoke-RestMethod "http://127.0.0.1:8765/unidades/MIC-01/disponibilidad?inicio=2030-05-10T10:00:00&fin=2030-05-10T11:00:00"
+Invoke-RestMethod "http://127.0.0.1:8800/unidades/MIC-01/disponibilidad?inicio=2030-05-10T10:00:00&fin=2030-05-10T11:00:00"
 
 # 3. Crear una reserva (guarda la respuesta en $r)
 $cuerpo = @{ unidad_id = "MIC-01"; solicitante = "Ana Prueba"; inicio = "2030-05-10T10:00:00"; fin = "2030-05-10T11:00:00" } | ConvertTo-Json
-$r = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8765/reservas -ContentType "application/json" -Body $cuerpo
+$r = Invoke-RestMethod -Method Post -Uri http://127.0.0.1:8800/reservas -ContentType "application/json" -Body $cuerpo
 $r
 
 # 4. Listar reservas (filtros opcionales: unidad_id, estado=activa|cancelada)
-Invoke-RestMethod "http://127.0.0.1:8765/reservas?unidad_id=MIC-01"
+Invoke-RestMethod "http://127.0.0.1:8800/reservas?unidad_id=MIC-01"
 
 # 5. Cancelar la reserva creada (se conserva con estado "cancelada")
-Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8765/reservas/$($r.id)/cancelar"
+Invoke-RestMethod -Method Post -Uri "http://127.0.0.1:8800/reservas/$($r.id)/cancelar"
 ```
 
 **Cómo se leen las respuestas:**
