@@ -135,3 +135,36 @@ pruebas nuevas basadas en el ejemplo de la consigna.
 - **Motivo:** SQLite toma el lock de escritura al empezar, así dos pedidos simultáneos en
   el mismo proceso no pueden pasar ambos la verificación. La concurrencia distribuida
   queda fuera de alcance.
+
+---
+
+## Feature 4 — Consulta de disponibilidad (`feature/disponibilidad`)
+
+**Qué agrega:** `GET /unidades/{unidad_id}/disponibilidad?inicio=…&fin=…`, el modelo
+`Disponibilidad` y 18 pruebas.
+
+### ADR-012 — Una sola regla para consultar y para reservar
+
+- **Decisión:** la consulta llama a la misma `servicios.buscar_conflictos` que usa la
+  creación y valida el intervalo con el mismo modelo `Intervalo` (ISO 8601 sin zona,
+  inicio < fin).
+- **Motivo:** la consigna exige que la disponibilidad use exactamente las mismas reglas.
+  Con una sola función no pueden divergir.
+- **Consecuencia:** la prueba parametrizada
+  `test_disponibilidad_coincide_con_lo_que_acepta_la_creacion` compara, para 7
+  intervalos, la respuesta de la consulta con el resultado real de intentar reservar.
+
+### ADR-013 — Respuesta con los conflictos y 404 para unidad inexistente
+
+- **Decisión:** la respuesta incluye `disponible` y la lista `conflictos` con las reservas
+  activas que ocupan el intervalo. Si la unidad no existe responde **404**, porque acá la
+  unidad es el recurso de la URL; al crear, la unidad viene en el cuerpo y responde 422
+  (ADR-007).
+- **Motivo:** saber *quién* ocupa el horario es lo que necesita la coordinación para
+  reorganizar.
+
+### ADR-014 — Se puede consultar el pasado
+
+- **Decisión:** a diferencia de la creación (ADR-006), la consulta acepta intervalos
+  pasados.
+- **Motivo:** consultar no modifica nada y sirve para revisar el historial de uso.

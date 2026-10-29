@@ -58,3 +58,11 @@ class Reserva(BaseModel):
     estado: str
     creada_en: str
     cancelada_en: Optional[str] = None
+
+
+class Disponibilidad(BaseModel):
+    unidad_id: str
+    inicio: str
+    fin: str
+    disponible: bool
+    conflictos: list[Reserva]

@@ -1,7 +1,8 @@
 # Estado actual
 
-- **Rama activa:** `feature/reglas-superposicion` (feature 3)
-- **Último paso:** rechazo de superposiciones (409) con intervalos semiabiertos; 40 pruebas en verde.
-- **Próximo paso:** feature 4, `feature/disponibilidad`: `GET /unidades/{id}/disponibilidad`
-  reutilizando `servicios.buscar_conflictos`.
+- **Rama activa:** `feature/disponibilidad` (feature 4)
+- **Último paso:** `GET /unidades/{id}/disponibilidad` reutilizando la regla de superposición;
+  58 pruebas en verde.
+- **Próximo paso:** feature 5, `feature/cancelacion`: `POST /reservas/{id}/cancelar`, listado
+  de reservas y prueba de persistencia de activas y canceladas al reiniciar.
 - **Bloqueos:** ninguno.

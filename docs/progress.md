@@ -8,8 +8,8 @@ merge humano.
 | :-: | :--- | :--- | :--- | :--- |
 | 1 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | ✅ PR #10 mergeado | 5/5 ✅ |
 | 2 | Crear reserva con validaciones | `feature/crear-reserva` | ✅ PR #11 mergeado | 27/27 ✅ |
-| 3 | Reglas de superposición | `feature/reglas-superposicion` | 🔄 PR abierto | 40/40 ✅ |
-| 4 | Consulta de disponibilidad | `feature/disponibilidad` | ⏳ | — |
+| 3 | Reglas de superposición | `feature/reglas-superposicion` | ✅ PR #12 mergeado | 40/40 ✅ |
+| 4 | Consulta de disponibilidad | `feature/disponibilidad` | 🔄 PR abierto | 58/58 ✅ |
 | 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ⏳ | — |
 
 ## Requisitos de prueba de la consigna

@@ -61,4 +61,5 @@ MIC-02 10:00-11:00 (otra unidad)       -> 201 id=e1cb683d-a4df-4ffb-a72e-3a1c9de
 
 ## Decisión humana
 
-**Pendiente:** revisión y merge del PR de esta feature.
+**Aceptado.** Giovanni revisó y mergeó el PR #12 a `main` el 2026-10-29 (merge commit
+`5f7371b`).
