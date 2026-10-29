@@ -16,12 +16,12 @@ CODIGOS_HTTP = {
     servicios.Conflicto: 409,
 }
 
-# El 8000 (default de Uvicorn) suele estar ocupado por otras herramientas.
-PUERTO_POR_DEFECTO = 8765
+# El 8000 (default de Uvicorn) y el 8765 estaban ocupados en la máquina del autor.
+PUERTO_POR_DEFECTO = 8800
 
 
 def puerto() -> int:
-    """Puerto de la API: variable LAB_PORT o 8765."""
+    """Puerto de la API: variable LAB_PORT o 8800."""
     return int(os.environ.get("LAB_PORT", PUERTO_POR_DEFECTO))
 
 
