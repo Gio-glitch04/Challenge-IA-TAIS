@@ -211,7 +211,7 @@ pruebas nuevas basadas en el ejemplo de la consigna.
 
 ## Ajustes posteriores
 
-### ADR-019 — Puerto por defecto 8765
+### ADR-019 — Puerto por defecto 8765 (reemplazado por ADR-020)
 
 - **Decisión:** la API escucha en `127.0.0.1:8765` cuando se levanta con
   `python -m app.main`. La variable `LAB_PORT` cambia el puerto.
@@ -221,3 +221,11 @@ pruebas nuevas basadas en el ejemplo de la consigna.
   olvidar y el error ("address already in use") no explica qué hacer.
 - **Consecuencia:** el README y `AGENTS.md` usan el 8765. La evidencia del episodio 05
   conserva el 8000 porque registra lo que se ejecutó en ese momento.
+
+### ADR-020 — Puerto por defecto 8800 (reemplaza a ADR-019)
+
+- **Decisión:** el puerto por defecto pasa a ser **8800**. `LAB_PORT` sigue sirviendo para
+  cambiarlo.
+- **Motivo:** el 8765 también estaba ocupado en la máquina del autor, y el autor eligió el
+  8800.
+- **Consecuencia:** el README y `AGENTS.md` usan el 8800.
