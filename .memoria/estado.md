@@ -1,7 +1,8 @@
 # Estado actual
 
-- **Rama activa:** `feature/interfaz-web` (feature 6)
-- **Último paso:** página web en `/` que usa los endpoints de la API (ADR-021, ADR-022);
-  75 pruebas en verde y recorrido en Chromium con los casos de la consigna.
-- **Próximo paso:** revisión y merge del PR.
+- **Rama activa:** `docs/readme-interfaz`
+- **Último paso:** feature 6 (interfaz web) mergeada (PR #19, `86ee6b1`) y marcada como
+  aceptada. El README pasa a guiar el uso por la interfaz web; la API queda como uso
+  opcional.
+- **Próximo paso:** revisión y merge de este PR.
 - **Bloqueos:** ninguno.

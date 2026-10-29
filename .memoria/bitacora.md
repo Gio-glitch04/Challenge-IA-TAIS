@@ -81,3 +81,10 @@ Registro cronológico, solo se agregan entradas al final.
 - TDD: `test:` con 3 fallas → `feat:` → `refactor:` → 75 passed.
 - Recorrido en Chromium (Playwright 1.63.0) con los casos de la consigna: resultados iguales
   a los de la API.
+
+## 2026-10-29 — docs/readme-interfaz
+
+- PR #19 (feature 6, interfaz web) mergeado por Giovanni (`86ee6b1`); episodio 06 aceptado.
+- Pedido del autor: adaptar el README a que la aplicación se usa con interfaz gráfica. La
+  guía empieza por el navegador con un recorrido del ejemplo de la consigna; PowerShell y
+  `/docs` quedan como uso por API.
