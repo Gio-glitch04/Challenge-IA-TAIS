@@ -72,3 +72,12 @@ Registro cronológico, solo se agregan entradas al final.
 - PR #17 (puerto 8765) mergeado por Giovanni.
 - El 8765 también estaba ocupado en su máquina; eligió el 8800.
 - TDD: `test:` con 1 falla → `fix:` → 71 passed. `python -m app.main` respondió en 8800.
+
+## 2026-10-29 — feature/interfaz-web (feature 6)
+
+- PR #18 (puerto 8800) mergeado por Giovanni.
+- Pedido del autor: una interfaz para navegar y probar la app. Se hizo mínima (un HTML sin
+  librerías en `/`) porque la consigna deja fuera de alcance un frente gráfico complejo.
+- TDD: `test:` con 3 fallas → `feat:` → `refactor:` → 75 passed.
+- Recorrido en Chromium (Playwright 1.63.0) con los casos de la consigna: resultados iguales
+  a los de la API.

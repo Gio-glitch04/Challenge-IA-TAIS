@@ -1,7 +1,7 @@
 # Estado actual
 
-- **Rama activa:** `fix/puerto-8800`
-- **Último paso:** a pedido del autor, el puerto por defecto pasa de 8765 a 8800 (ADR-020,
-  reemplaza a ADR-019); 71 pruebas en verde.
-- **Próximo paso:** revisión y merge de este PR.
+- **Rama activa:** `feature/interfaz-web` (feature 6)
+- **Último paso:** página web en `/` que usa los endpoints de la API (ADR-021, ADR-022);
+  75 pruebas en verde y recorrido en Chromium con los casos de la consigna.
+- **Próximo paso:** revisión y merge del PR.
 - **Bloqueos:** ninguno.

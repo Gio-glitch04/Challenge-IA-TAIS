@@ -229,3 +229,35 @@ pruebas nuevas basadas en el ejemplo de la consigna.
 - **Motivo:** el 8765 también estaba ocupado en la máquina del autor, y el autor eligió el
   8800.
 - **Consecuencia:** el README y `AGENTS.md` usan el 8800.
+
+---
+
+## Feature 6 — Interfaz web (`feature/interfaz-web`)
+
+**Qué agrega:** `GET /` con una página web (`app/static/index.html`) para usar la API desde
+el navegador, y 4 pruebas.
+
+### ADR-021 — Página estática servida por la misma app, sin framework
+
+- **Decisión:** un único archivo HTML con CSS y JavaScript sin librerías, servido en `/`
+  con `FileResponse`. No aparece en el esquema OpenAPI.
+- **Motivo:** el autor quería que cualquiera pueda navegar y probar la aplicación sin
+  `curl` ni PowerShell. Servirla desde la misma app evita CORS, otro proceso y
+  dependencias nuevas. La consigna deja fuera de alcance una interfaz gráfica compleja,
+  así que se mantiene mínima y como complemento de la API.
+- **Alternativa descartada:** una SPA con React o Vue, o plantillas Jinja. Agregan
+  dependencias y un paso de build para algo que se resuelve con un archivo.
+- **Consecuencia:** se sigue instalando y ejecutando igual: `python -m app.main` y abrir
+  `http://127.0.0.1:8800/`.
+
+### ADR-022 — La página no tiene reglas de negocio
+
+- **Decisión:** la página solo llama a los endpoints existentes y muestra sus respuestas,
+  incluidos los mensajes de 409 y 422. Las fechas de `datetime-local` (`AAAA-MM-DDTHH:MM`)
+  se envían tal cual, porque la API ya acepta ese formato (ADR-005).
+- **Motivo:** si la página validara por su cuenta, habría dos versiones de las reglas que
+  podrían divergir (el mismo criterio que ADR-012).
+- **Consecuencia:** la prueba `test_la_pagina_solo_usa_los_endpoints_de_la_api` verifica que
+  la página use los endpoints de la API. El solicitante se muestra con `textContent`, nunca
+  como HTML.
+

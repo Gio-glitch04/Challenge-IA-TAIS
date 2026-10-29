@@ -21,7 +21,8 @@ repositorio. Se lee completo al iniciar cada sesión, antes de tocar código.
   repositorio vacías ni dependencias que la especificación no pida.
 - **Incrementos verticales completos:** cada feature cruza todas las capas que necesita
   (esquema SQLite, lógica en `app/servicios.py`, endpoint FastAPI, pruebas `pytest`) y se
-  puede demostrar apenas se termina. No hay interfaz gráfica (fuera de alcance).
+  puede demostrar apenas se termina. La única interfaz gráfica es una página de prueba en
+  `app/static/index.html` que solo llama a la API; las reglas nunca se duplican ahí.
 - **Resultados deterministas y verificables:** una tarea está terminada solo si
   `python -m pytest` pasa en verde y la evidencia (comando, versión, salida) quedó en
   `docs/evidence/`. Lo que el agente *dice* que hizo se distingue siempre de lo que se
