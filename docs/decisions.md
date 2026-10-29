@@ -137,3 +137,39 @@ negocio), `POST /reservas`, `GET /reservas/{id}` y 27 pruebas en total.
   y tiene un máximo de 100 caracteres.
 - **Motivo:** un UUID no se puede adivinar ni se repite entre reinicios. Guardar el nombre
   sin espacios extremos evita duplicados visuales.
+
+---
+
+## Feature 4 — Reglas de superposición (`feature/reglas-superposicion`)
+
+**Qué agrega:** `servicios.buscar_conflictos`, el error `Conflicto` (HTTP 409) y 13
+pruebas nuevas basadas en el ejemplo de la consigna.
+
+### ADR-012 — Intervalos semiabiertos `[inicio, fin)`
+
+- **Decisión:** dos reservas de la misma unidad chocan si
+  `existente.inicio < nueva.fin AND nueva.inicio < existente.fin`, considerando solo
+  reservas con `estado = 'activa'`.
+- **Motivo:** con desigualdades estrictas, un turno que termina a las 11:00 no choca con
+  uno que empieza a las 11:00 (consecutivos permitidos), y cualquier solapamiento real,
+  aunque sea de un segundo, se rechaza. Filtrar por `estado = 'activa'` hace que las
+  canceladas no bloqueen.
+- **Alternativa descartada:** intervalos cerrados `[inicio, fin]`, que rechazarían los
+  turnos consecutivos que pide la consigna.
+- **Consecuencia:** la misma función se reutiliza en la consulta de disponibilidad
+  (feature 5), así ambas operaciones aplican exactamente la misma regla.
+
+### ADR-013 — Superposición → 409 Conflict con las reservas en conflicto
+
+- **Decisión:** una superposición responde **409** y el mensaje incluye los ids de las
+  reservas que chocan.
+- **Motivo:** el pedido es válido en forma (no es un 422); choca con el estado actual del
+  recurso. Incluir los ids ayuda a la coordinación a resolverlo.
+
+### ADR-014 — Verificación y alta en la misma transacción
+
+- **Decisión:** `crear_reserva` hace la búsqueda de conflictos y el `INSERT` dentro de
+  `BEGIN IMMEDIATE`.
+- **Motivo:** SQLite toma el lock de escritura al empezar, así dos pedidos simultáneos en
+  el mismo proceso no pueden pasar ambos la verificación. La concurrencia distribuida
+  queda fuera de alcance.

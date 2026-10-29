@@ -25,3 +25,9 @@ Registro cronológico, solo se agregan entradas al final.
 - Supuestos documentados: ADR-008 a ADR-011 (fechas sin zona, sin reservas en el pasado,
   sin límites de duración, 422 para unidad inexistente).
 - TDD: `test:` con 21 fallas → `feat:` → 27 passed.
+
+## 2026-10-29 — feature/reglas-superposicion
+
+- PR #3 (crear reserva) abierto.
+- El ejemplo de la consigna se usó como fixture de prueba.
+- TDD: `test:` con 7 fallas → `feat:` → 40 passed.
