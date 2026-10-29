@@ -206,3 +206,41 @@ pruebas nuevas basadas en el ejemplo de la consigna.
 - **Decisión:** a diferencia de la creación (ADR-009), la consulta acepta intervalos
   pasados.
 - **Motivo:** consultar no modifica nada y sirve para revisar el historial de uso.
+
+---
+
+## Feature 6 — Cancelación y persistencia al reiniciar (`feature/cancelacion`)
+
+**Qué agrega:** `POST /reservas/{id}/cancelar`, `GET /reservas?unidad_id=&estado=`,
+`tests/test_cancelacion.py` y `tests/test_persistencia_reinicio.py`.
+
+### ADR-018 — Cancelar es cambiar el estado, nunca borrar
+
+- **Decisión:** cancelar hace `UPDATE … SET estado = 'cancelada', cancelada_en = <ahora>`.
+  No existe ningún endpoint ni función que borre reservas.
+- **Motivo:** la consigna exige conservar id y datos. Como la regla de superposición filtra
+  por `estado = 'activa'` (ADR-012), el horario queda libre sin ningún código extra.
+- **Consecuencia:** el historial completo se puede consultar con `GET /reservas`.
+
+### ADR-019 — Cancelar como `POST /reservas/{id}/cancelar`
+
+- **Decisión:** una acción explícita en lugar de `DELETE /reservas/{id}`.
+- **Motivo:** `DELETE` sugiere que el recurso desaparece, y acá se conserva.
+- **Alternativa descartada:** `PATCH /reservas/{id}` con `{"estado": "cancelada"}`; abre la
+  puerta a otras transiciones de estado que no están en el alcance.
+
+### ADR-020 — Cancelar dos veces → 409
+
+- **Decisión:** cancelar una reserva ya cancelada responde **409** y no modifica
+  `cancelada_en`.
+- **Motivo:** conserva la fecha de la cancelación original y avisa al cliente de un posible
+  doble envío.
+- **Supuesto:** se permite cancelar reservas pasadas o en curso; la consigna no lo
+  restringe y no afecta a ninguna regla.
+
+### ADR-021 — Verificación de persistencia automática y manual
+
+- **Decisión:** `test_activas_y_canceladas_sobreviven_al_reinicio` arranca y apaga la app
+  completa dos veces sobre el mismo archivo. Además, se ejecutó un procedimiento manual con
+  Uvicorn real (detener y volver a levantar), documentado con su salida en
+  `docs/evidence/episodio-06-cancelacion.md`.

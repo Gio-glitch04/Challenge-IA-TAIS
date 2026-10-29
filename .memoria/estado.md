@@ -1,8 +1,10 @@
 # Estado actual
 
-- **Rama activa:** `feature/disponibilidad`
-- **Último paso:** `GET /unidades/{id}/disponibilidad` reutilizando la regla de superposición;
-  58 pruebas en verde.
-- **Próximo paso:** `feature/cancelacion`: `POST /reservas/{id}/cancelar`, listado de
-  reservas y prueba de persistencia de activas y canceladas al reiniciar.
-- **Bloqueos:** ninguno. PR #1 mergeado; PR #2 reapuntado a `main`; #3 y #4 esperan revisión.
+- **Rama activa:** `feature/cancelacion`
+- **Último paso:** cancelación que conserva el registro, listado con filtros, prueba de
+  reinicio y verificación manual con Uvicorn; 69 pruebas en verde. Todas las reglas y
+  pruebas de la consigna están cubiertas.
+- **Próximo paso:** `feature/readme`: README final con las 4 secciones de la consigna
+  (especificación, solución, preparación del agente, registro de decisiones con los 3
+  episodios).
+- **Bloqueos:** los episodios necesitan la decisión humana de Giovanni (revisión de PRs).

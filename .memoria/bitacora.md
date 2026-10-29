@@ -38,3 +38,10 @@ Registro cronológico, solo se agregan entradas al final.
 - Giovanni mergeó el PR #1 a `main` (`73de8e3`). El agente reapuntó el PR #2 a `main`;
   la rama `feature/harness-agentes` no se borró (requiere aprobación).
 - TDD: `test:` con 16 fallas → `feat:` → 58 passed.
+
+## 2026-10-29 — feature/cancelacion
+
+- PR #5 (disponibilidad) abierto.
+- TDD: `test:` con 10 fallas → `feat:` → 69 passed.
+- Procedimiento manual: 2 ejecuciones de Uvicorn sobre `data/manual-reinicio.db`;
+  la reserva activa y la cancelada se recuperaron con sus datos (archivo borrado al final).
