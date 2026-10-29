@@ -5,8 +5,8 @@ curso · ⏳ pendiente. "PR abierto" significa que espera revisión y merge huma
 
 | # | Feature | Rama | Estado | Pruebas |
 | :-: | :--- | :--- | :--- | :--- |
-| 1 | Harness del agente y documentación | `feature/harness-agentes` | 🔄 PR abierto | n/a (sin código) |
-| 2 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | ⏳ | — |
+| 1 | Harness del agente y documentación | `feature/harness-agentes` | 🔄 PR #1 abierto | n/a (sin código) |
+| 2 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | 🔄 PR abierto | 5/5 ✅ |
 | 3 | Crear reserva con validaciones | `feature/crear-reserva` | ⏳ | — |
 | 4 | Reglas de superposición | `feature/reglas-superposicion` | ⏳ | — |
 | 5 | Consulta de disponibilidad | `feature/disponibilidad` | ⏳ | — |
@@ -14,6 +14,8 @@ curso · ⏳ pendiente. "PR abierto" significa que espera revisión y merge huma
 | 7 | README final | `feature/readme` | ⏳ | — |
 
 ## Requisitos de prueba de la consigna
+
+Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 
 | Requisito | Prueba | Estado |
 | :--- | :--- | :--- |
