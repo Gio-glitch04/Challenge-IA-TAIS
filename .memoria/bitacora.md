@@ -59,3 +59,10 @@ Registro cronológico, solo se agregan entradas al final.
   variantes de `cmd`. Los endpoints de la guía se ejecutaron con `curl` contra Uvicorn
   (Linux); PowerShell no está disponible en el contenedor.
 - `python -m pytest -q` → 69 passed.
+
+## 2026-10-29 — fix/puerto-api
+
+- PR #16 (guía de Windows) mergeado por Giovanni (`142c43c`).
+- Pedido del autor: cambiar el puerto porque el 8000 está ocupado en su máquina.
+- TDD: `test:` con error de colección (no existía `puerto`) → `feat:` → 71 passed.
+- Prueba manual: `python -m app.main` respondió en 8765 y con `LAB_PORT=9123` en 9123.
