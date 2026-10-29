@@ -6,8 +6,8 @@ merge humano.
 
 | # | Feature | Rama | Estado | Pruebas |
 | :-: | :--- | :--- | :--- | :--- |
-| 1 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | 🔄 PR abierto | 5/5 ✅ |
-| 2 | Crear reserva con validaciones | `feature/crear-reserva` | ⏳ | — |
+| 1 | Persistencia SQLite e inventario | `feature/persistencia-inventario` | ✅ PR #10 mergeado | 5/5 ✅ |
+| 2 | Crear reserva con validaciones | `feature/crear-reserva` | 🔄 PR abierto | 27/27 ✅ |
 | 3 | Reglas de superposición | `feature/reglas-superposicion` | ⏳ | — |
 | 4 | Consulta de disponibilidad | `feature/disponibilidad` | ⏳ | — |
 | 5 | Cancelación y persistencia al reiniciar | `feature/cancelacion` | ⏳ | — |
@@ -18,10 +18,10 @@ Comando: `python -m pytest -v` (Python 3.13.17, pytest 9.2.0).
 
 | Requisito | Prueba | Estado |
 | :--- | :--- | :--- |
-| Creación válida | — | ⏳ |
+| Creación válida | `test_crear_reserva.py::test_creacion_valida_devuelve_201_y_reserva_activa` | ✅ |
 | Rechazo por superposición | — | ⏳ |
 | Límites consecutivos | — | ⏳ |
 | Unidades distintas simultáneas | — | ⏳ |
-| Entradas inválidas (solicitante vacío, inicio ≥ fin, unidad inexistente) | — | ⏳ |
+| Entradas inválidas (solicitante vacío, inicio ≥ fin, unidad inexistente) | `test_crear_reserva.py::test_rechaza_*` | ✅ |
 | Cancelación conserva registro y libera horario | — | ⏳ |
 | Persistencia de activas y canceladas tras reiniciar | — | ⏳ |

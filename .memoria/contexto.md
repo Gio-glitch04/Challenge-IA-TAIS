@@ -19,3 +19,9 @@
   concurrencia distribuida, integraciones externas.
 - **Convenciones:** código y documentación en español; ramas `feature/*`; commits
   semánticos; sin el nombre del asistente en ramas, commits ni PRs.
+
+## Supuestos acordados (ver `docs/decisions.md`)
+
+- Fechas ISO 8601 sin zona horaria, hora local del laboratorio, precisión de segundos.
+- No se crean reservas con inicio en el pasado; no hay límites de duración ni anticipación.
+- Entrada inválida → 422; recurso inexistente → 404.
